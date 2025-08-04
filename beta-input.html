@@ -491,9 +491,9 @@
             // Boss can edit any task
             if (currentUser.role === 'boss') return true
             
-            // Manager can edit tasks in their projects
+            // Manager can edit any task (updated)
             if (currentUser.role === 'manager') {
-                return currentTask.project && currentUser.id === currentTask.project.manager_id
+                return true
             }
             
             // Employee can only edit their assigned tasks
