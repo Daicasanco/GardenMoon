@@ -520,13 +520,25 @@
         async function loadExistingContent() {
             try {
                 if (currentTask.beta_link) {
-                    // If beta_link is a URL, fetch content
+                    // Check if beta_link is a URL or direct content
                     if (currentTask.beta_link.startsWith('http')) {
-                        const response = await fetch(currentTask.beta_link)
-                        const content = await response.text()
-                        document.getElementById('betaContent').value = content
+                        try {
+                            // Try to fetch from URL (for external links)
+                            const response = await fetch(currentTask.beta_link)
+                            if (response.ok) {
+                                const content = await response.text()
+                                document.getElementById('betaContent').value = content
+                            } else {
+                                // If fetch fails, treat as direct content
+                                document.getElementById('betaContent').value = currentTask.beta_link
+                            }
+                        } catch (fetchError) {
+                            console.warn('Failed to fetch from URL, treating as direct content:', fetchError)
+                            // If fetch fails (CORS, network error, etc.), treat as direct content
+                            document.getElementById('betaContent').value = currentTask.beta_link
+                        }
                     } else {
-                        // If it's direct content
+                        // If it's direct content (not a URL)
                         document.getElementById('betaContent').value = currentTask.beta_link
                     }
                     updateWordCount()
