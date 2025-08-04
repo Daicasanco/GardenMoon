@@ -3898,42 +3898,24 @@ async function executeDownload() {
 }
 
 async function downloadMergedBetaFiles(taskIds) {
-    const betaTasks = tasks.filter(t => taskIds.includes(t.id))
-    let mergedContent = ''
-    
-    // Tạo header cho file gộp
-    const project = projects.find(p => p.id === betaTasks[0].project_id)
-    mergedContent += `=== FILE BETA GỘP - ${project.name} ===\n`
-    mergedContent += `Ngày tạo: ${new Date().toLocaleString('vi-VN')}\n`
-    mergedContent += `Tổng số file: ${betaTasks.length}\n\n`
-    
-    // Gộp nội dung từng file
+    const betaTasks = tasks.filter(t => taskIds.includes(t.id));
+    let mergedContent = '';
+
     for (const task of betaTasks) {
-        const assignee = window.allEmployees.find(e => e.id === task.assignee_id)
-        mergedContent += `\n--- ${task.name} ---\n`
-        mergedContent += `Người thực hiện: ${assignee ? assignee.name : 'N/A'}\n`
-        mergedContent += `Trạng thái: ${task.status}\n`
-        mergedContent += `Ngày cập nhật: ${formatDateTime(task.updated_at || task.created_at)}\n`
-        mergedContent += `Nội dung:\n`
-        
-        // Lấy nội dung từ beta_link
         if (task.beta_link) {
-            mergedContent += task.beta_link + '\n'
+            mergedContent += task.beta_link + '\n\n';
         }
-        
-        mergedContent += '\n' + '='.repeat(50) + '\n'
     }
-    
-    // Tạo và tải file
-    const blob = new Blob([mergedContent], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `beta_merged_${project.name}_${new Date().toISOString().split('T')[0]}.txt`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+
+    const blob = new Blob([mergedContent.trim()], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `beta_merged_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 async function downloadSeparateBetaFiles(taskIds) {
