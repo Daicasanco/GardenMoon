@@ -1583,6 +1583,9 @@ function renderProjectsTable() {
                     ${hasManagerOrBossPermissions(currentUser) ? 
                         `<button class="btn btn-outline-info btn-sm" onclick="showProjectReport(${project.id})" title="Báo cáo dự án">
                             <i class="fas fa-chart-bar"></i>
+                        </button>
+                        <button class="btn btn-outline-success btn-sm" onclick="downloadBetaFiles(${project.id})" title="Tải file Beta">
+                            <i class="fas fa-download"></i>
                         </button>` : ''
                     }
                     ${canOperateOnProject(project) ? 
@@ -3067,6 +3070,39 @@ function renderBetaTasksTable() {
             })
         }
         
+        // Format Beta link với phân quyền mới
+        let betaLinkDisplay = ''
+        
+        if (currentUser && (isBoss(currentUser) || currentUser.role === 'manager')) {
+            // Boss/Manager: Luôn thấy button "Xem Beta" nếu có dữ liệu
+            if (task.beta_link) {
+                betaLinkDisplay = `<button class="btn btn-sm btn-outline-success" onclick="viewBetaData(${task.id})">
+                    <i class="fas fa-eye"></i> Xem Beta
+                </button>`
+            } else {
+                betaLinkDisplay = '<span class="text-muted">-</span>'
+            }
+        } else if (currentUser && currentUser.role === 'employee') {
+            // Employee: Chỉ thấy button nếu là người được assign task này
+            if (task.assignee_id === currentUser.id) {
+                if (task.beta_link) {
+                    betaLinkDisplay = `<button class="btn btn-sm btn-outline-primary" onclick="editBetaData(${task.id})">
+                        <i class="fas fa-edit"></i> Cập nhật Beta
+                    </button>`
+                } else {
+                    betaLinkDisplay = `<button class="btn btn-sm btn-outline-success" onclick="inputBetaData(${task.id})">
+                        <i class="fas fa-plus"></i> Nhập Beta
+                    </button>`
+                }
+            } else {
+                // Nhân viên khác: Không thấy gì
+                betaLinkDisplay = '<span class="text-muted">-</span>'
+            }
+        } else {
+            // Khách: Không thấy gì
+            betaLinkDisplay = '<span class="text-muted">-</span>'
+        }
+        
         // Format notes with link if extensive
         let notesDisplay = '<span class="text-muted">-</span>'
         if (task.beta_notes && task.beta_notes.trim()) {
@@ -3113,7 +3149,7 @@ function renderBetaTasksTable() {
                 </td>
                 <td>${getTaskStatusBadge(task.status)}</td>
                 <td>${rvLink}</td>
-                <td>${task.beta_link ? `<a href="${task.beta_link}" target="_blank" class="btn btn-sm btn-outline-success"><i class="fas fa-external-link-alt"></i> Link</a>` : '<span class="text-muted">-</span>'}</td>
+                <td>${betaLinkDisplay}</td>
                 <td>${rvChars}</td>
                 <td>${betaChars}</td>
                 <td>${payment}</td>
@@ -3739,4 +3775,201 @@ function exportReportToCSV() {
     document.body.removeChild(link)
     
     showNotification('Đã xuất báo cáo thành công!', 'success')
+}
+
+// Beta Data Functions
+function viewBetaData(taskId) {
+    const task = tasks.find(t => t.id === taskId)
+    if (task && task.beta_link) {
+        // Tạo blob URL để hiển thị nội dung
+        const blob = new Blob([task.beta_link], { type: 'text/plain;charset=utf-8' })
+        const url = URL.createObjectURL(blob)
+        window.open(url, '_blank')
+    } else {
+        showNotification('Không có dữ liệu beta để xem', 'error')
+    }
+}
+
+function inputBetaData(taskId) {
+    window.open(`beta-input.html?taskId=${taskId}&mode=input`, '_blank')
+}
+
+function editBetaData(taskId) {
+    window.open(`beta-input.html?taskId=${taskId}&mode=edit`, '_blank')
+}
+
+// Download Beta Files Functions
+async function downloadBetaFiles(projectId) {
+    const project = projects.find(p => p.id === projectId)
+    if (!project) return
+    
+    // Kiểm tra quyền
+    if (!currentUser || (!isBoss(currentUser) && currentUser.role !== 'manager')) {
+        showNotification('Bạn không có quyền tải file beta', 'error')
+        return
+    }
+    
+    // Lấy danh sách beta tasks của dự án
+    const betaTasks = tasks.filter(t => 
+        t.project_id === projectId && 
+        t.task_type === 'beta' && 
+        t.beta_link // Chỉ những task có dữ liệu beta
+    )
+    
+    if (betaTasks.length === 0) {
+        showNotification('Không có file beta nào để tải', 'info')
+        return
+    }
+    
+    // Populate modal
+    document.getElementById('downloadProjectName').textContent = project.name
+    populateBetaFilesTable(betaTasks)
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('downloadBetaModal'))
+    modal.show()
+}
+
+function populateBetaFilesTable(betaTasks) {
+    const tbody = document.getElementById('betaFilesTableBody')
+    tbody.innerHTML = ''
+    
+    betaTasks.forEach(task => {
+        const assignee = window.allEmployees.find(e => e.id === task.assignee_id)
+        const row = document.createElement('tr')
+        row.innerHTML = `
+            <td><input type="checkbox" class="beta-file-checkbox" value="${task.id}" checked></td>
+            <td>${task.name}</td>
+            <td>${assignee ? assignee.name : 'N/A'}</td>
+            <td>${getTaskStatusBadge(task.status)}</td>
+            <td>${formatDateTime(task.updated_at || task.created_at)}</td>
+        `
+        tbody.appendChild(row)
+    })
+    
+    // Setup select all checkbox
+    setupSelectAllBetaFiles()
+}
+
+function setupSelectAllBetaFiles() {
+    const selectAll = document.getElementById('selectAllBetaFiles')
+    const checkboxes = document.querySelectorAll('.beta-file-checkbox')
+    
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => cb.checked = this.checked)
+        })
+        
+        // Update select all when individual checkboxes change
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', function() {
+                const allChecked = Array.from(checkboxes).every(c => c.checked)
+                const someChecked = Array.from(checkboxes).some(c => c.checked)
+                selectAll.checked = allChecked
+                selectAll.indeterminate = someChecked && !allChecked
+            })
+        })
+    }
+}
+
+async function executeDownload() {
+    const downloadMode = document.getElementById('downloadMode').value
+    const mergeOption = document.getElementById('mergeOption').value
+    const selectedTasks = Array.from(document.querySelectorAll('.beta-file-checkbox:checked'))
+        .map(cb => parseInt(cb.value))
+    
+    if (selectedTasks.length === 0) {
+        showNotification('Vui lòng chọn ít nhất một file để tải', 'error')
+        return
+    }
+    
+    try {
+        if (mergeOption === 'merge') {
+            // Gộp thành 1 file
+            await downloadMergedBetaFiles(selectedTasks)
+        } else {
+            // Tải file riêng biệt
+            await downloadSeparateBetaFiles(selectedTasks)
+        }
+        
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('downloadBetaModal'))
+        modal.hide()
+        
+        showNotification('Tải file thành công!', 'success')
+        
+    } catch (error) {
+        console.error('Error downloading files:', error)
+        showNotification('Lỗi khi tải file: ' + error.message, 'error')
+    }
+}
+
+async function downloadMergedBetaFiles(taskIds) {
+    const betaTasks = tasks.filter(t => taskIds.includes(t.id))
+    let mergedContent = ''
+    
+    // Tạo header cho file gộp
+    const project = projects.find(p => p.id === betaTasks[0].project_id)
+    mergedContent += `=== FILE BETA GỘP - ${project.name} ===\n`
+    mergedContent += `Ngày tạo: ${new Date().toLocaleString('vi-VN')}\n`
+    mergedContent += `Tổng số file: ${betaTasks.length}\n\n`
+    
+    // Gộp nội dung từng file
+    for (const task of betaTasks) {
+        const assignee = window.allEmployees.find(e => e.id === task.assignee_id)
+        mergedContent += `\n--- ${task.name} ---\n`
+        mergedContent += `Người thực hiện: ${assignee ? assignee.name : 'N/A'}\n`
+        mergedContent += `Trạng thái: ${task.status}\n`
+        mergedContent += `Ngày cập nhật: ${formatDateTime(task.updated_at || task.created_at)}\n`
+        mergedContent += `Nội dung:\n`
+        
+        // Lấy nội dung từ beta_link
+        if (task.beta_link) {
+            mergedContent += task.beta_link + '\n'
+        }
+        
+        mergedContent += '\n' + '='.repeat(50) + '\n'
+    }
+    
+    // Tạo và tải file
+    const blob = new Blob([mergedContent], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `beta_merged_${project.name}_${new Date().toISOString().split('T')[0]}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+}
+
+async function downloadSeparateBetaFiles(taskIds) {
+    const betaTasks = tasks.filter(t => taskIds.includes(t.id))
+    
+    for (const task of betaTasks) {
+        try {
+            let content = ''
+            
+            if (task.beta_link) {
+                content = task.beta_link
+            }
+            
+            // Tạo file riêng cho từng task
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `beta_${task.name.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+            URL.revokeObjectURL(url)
+            
+            // Delay nhỏ để tránh browser block multiple downloads
+            await new Promise(resolve => setTimeout(resolve, 100))
+            
+        } catch (error) {
+            console.error(`Error downloading file for task ${task.id}:`, error)
+        }
+    }
 }
