@@ -3921,11 +3921,25 @@ async function downloadMergedBetaFiles(taskIds) {
         }
     }
 
-    const blob = new Blob([mergedContent.trim()], { type: 'text/plain;charset=utf-8' });
+    const content = mergedContent.trim().replace(/\n/g, '<br>');
+
+    // Tạo nội dung HTML bọc nội dung text, giúp Word hiểu
+    const html = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office'
+              xmlns:w='urn:schemas-microsoft-com:office:word'
+              xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><meta charset='utf-8'><title>Export HTML to Word</title></head>
+        <body>${content}</body></html>
+    `;
+
+    const blob = new Blob(['\ufeff', html], {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `beta_merged_${new Date().toISOString().split('T')[0]}.txt`;
+    a.download = `beta_merged_${new Date().toISOString().split('T')[0]}.docx`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
