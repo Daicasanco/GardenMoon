@@ -3917,29 +3917,27 @@ async function downloadMergedBetaFiles(taskIds) {
 
     for (const task of betaTasks) {
         if (task.beta_link) {
-            mergedContent += task.beta_link + '\n\n';
+            mergedContent += task.beta_link + '<br><br>';
         }
     }
 
-    const content = mergedContent.trim().replace(/\n/g, '<br>');
-
-    // Tạo nội dung HTML bọc nội dung text, giúp Word hiểu
-    const html = `
+    const htmlContent = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office'
               xmlns:w='urn:schemas-microsoft-com:office:word'
               xmlns='http://www.w3.org/TR/REC-html40'>
-        <head><meta charset='utf-8'><title>Export HTML to Word</title></head>
-        <body>${content}</body></html>
+        <head><meta charset='utf-8'></head>
+        <body>${mergedContent.trim()}</body>
+        </html>
     `;
 
-    const blob = new Blob(['\ufeff', html], {
-        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    const blob = new Blob(['\ufeff', htmlContent], {
+        type: 'application/msword',
     });
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `beta_merged_${new Date().toISOString().split('T')[0]}.docx`;
+    a.download = `beta_merged_${new Date().toISOString().split('T')[0]}.doc`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
