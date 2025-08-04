@@ -439,9 +439,9 @@
             // Boss can access any task
             if (currentUser.role === 'boss') return true
             
-            // Manager can access tasks in their projects
+            // Manager can access any task (updated)
             if (currentUser.role === 'manager') {
-                return task.project && currentUser.id === task.project.manager_id
+                return true
             }
             
             // Employee can only access their assigned tasks
