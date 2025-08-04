@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - Tính năng Beta nâng cao - Garden Moon</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .feature-card {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fff;
+        }
+        
+        .feature-card h5 {
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        
+        .permission-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .text-editor-demo {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            min-height: 200px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #f8f9fa;
+        }
+        
+        .toolbar-demo {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .demo-btn {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-arrow-left me-2"></i>
+                Quay lại Bảng DL
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text">
+                    <i class="fas fa-demo me-1"></i>
+                    Demo Tính năng Beta nâng cao
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="demo-container">
+        <h2 class="text-center mb-4">
+            <i class="fas fa-star me-2"></i>
+            Demo: Tính năng Beta nâng cao
+        </h2>
+
+        <!-- Permission Demo -->
+        <div class="permission-demo">
+            <h4><i class="fas fa-shield-alt me-2"></i>Quyền chỉnh sửa Beta</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Quyền chỉnh sửa:</h6>
+                    <ul>
+                        <li><strong>Boss:</strong> Có thể chỉnh sửa tất cả task beta</li>
+                        <li><strong>Manager:</strong> Có thể chỉnh sửa task beta trong dự án quản lý</li>
+                        <li><strong>Employee:</strong> Chỉ có thể chỉnh sửa task beta được assign</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Chế độ hiển thị:</h6>
+                    <ul>
+                        <li><strong>Chế độ nhập:</strong> Cho beta user mới</li>
+                        <li><strong>Chế độ chỉnh sửa:</strong> Cho beta user cập nhật</li>
+                        <li><strong>Chế độ xem:</strong> Cho người không có quyền chỉnh sửa</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Text Editing Features Demo -->
+        <div class="feature-card">
+            <h5><i class="fas fa-paint-brush me-2"></i>Tính năng chỉnh sửa văn bản</h5>
+            
+            <div class="toolbar-demo">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="demoFontFamily">Font chữ:</label>
+                        <select class="form-control form-control-sm" id="demoFontFamily">
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="Times New Roman, serif">Times New Roman</option>
+                            <option value="Courier New, monospace" selected>Courier New</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="demoFontSize">Cỡ chữ:</label>
+                        <select class="form-control form-control-sm" id="demoFontSize">
+                            <option value="12">12px</option>
+                            <option value="14" selected>14px</option>
+                            <option value="16">16px</option>
+                            <option value="18">18px</option>
+                            <option value="20">20px</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="demoLineHeight">Khoảng cách dòng:</label>
+                        <select class="form-control form-control-sm" id="demoLineHeight">
+                            <option value="1.2">1.2</option>
+                            <option value="1.4">1.4</option>
+                            <option value="1.6" selected>1.6</option>
+                            <option value="1.8">1.8</option>
+                            <option value="2.0">2.0</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Chức năng:</label>
+                        <div>
+                            <button class="btn btn-outline-primary btn-sm demo-btn" onclick="demoSplitByPeriods()">
+                                <i class="fas fa-cut me-1"></i>Tách dòng
+                            </button>
+
+                            <button class="btn btn-outline-info btn-sm demo-btn" onclick="demoFormatText()">
+                                <i class="fas fa-magic me-1"></i>Định dạng
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm demo-btn" onclick="demoClearFormatting()">
+                                <i class="fas fa-eraser me-1"></i>Xóa định dạng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-editor-demo" id="demoEditor" contenteditable="true">
+                Đây là demo nội dung beta. Bạn có thể thử các tính năng chỉnh sửa văn bản ở đây. Ví dụ: tách dòng theo dấu chấm, kiểm tra chính tả, định dạng văn bản. Hãy thử thay đổi font chữ, cỡ chữ và khoảng cách dòng để xem hiệu ứng.
+            </div>
+
+            <div class="mt-3">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Số ký tự: <span id="demoCharCount">0</span> | 
+                    Số từ: <span id="demoWordCount">0</span> | 
+                    Số dòng: <span id="demoLineCount">0</span>
+                </small>
+            </div>
+        </div>
+
+
+
+        <!-- Download Features Demo -->
+        <div class="feature-card">
+            <h5><i class="fas fa-download me-2"></i>Tính năng tải file Beta</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Tải file cho Manager/Boss:</h6>
+                    <ul>
+                        <li>Tải từng file riêng lẻ</li>
+                        <li>Gộp tất cả file thành 1 file</li>
+                        <li>Chọn file cụ thể để tải</li>
+                        <li>Xem thông tin file trước khi tải</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Quyền truy cập:</h6>
+                    <ul>
+                        <li>Chỉ Manager và Boss có quyền tải</li>
+                        <li>Employee không thể tải file beta</li>
+                        <li>Bảo mật dữ liệu beta</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Buttons -->
+        <div class="feature-card">
+            <h5><i class="fas fa-vial me-2"></i>Test các tính năng</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100 mb-2" onclick="testBetaInput()">
+                        <i class="fas fa-edit me-2"></i>
+                        Test Beta Input
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-success w-100 mb-2" onclick="testBetaEdit()">
+                        <i class="fas fa-edit me-2"></i>
+                        Test Beta Edit
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-info w-100 mb-2" onclick="testBetaView()">
+                        <i class="fas fa-eye me-2"></i>
+                        Test Beta View
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature List -->
+        <div class="feature-card">
+            <h5><i class="fas fa-list me-2"></i>Danh sách tính năng mới</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Tính năng chỉnh sửa:</h6>
+                    <ul>
+                        <li>✅ Chọn font chữ</li>
+                        <li>✅ Điều chỉnh cỡ chữ</li>
+                        <li>✅ Thay đổi khoảng cách dòng</li>
+                        <li>✅ Tách dòng theo dấu chấm</li>
+                        <li>✅ Định dạng văn bản tự động</li>
+                        <li>✅ Xóa định dạng</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Tính năng quyền:</h6>
+                    <ul>
+                        <li>✅ Boss có quyền chỉnh sửa tất cả</li>
+                        <li>✅ Manager chỉnh sửa task trong dự án</li>
+                        <li>✅ Employee chỉnh sửa task được assign</li>
+                        <li>✅ Chế độ xem cho người không có quyền</li>
+                        <li>✅ Tải file beta cho Manager/Boss</li>
+                        <li>✅ Bảo mật dữ liệu beta</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Demo functions
+        function demoSplitByPeriods() {
+            const editor = document.getElementById('demoEditor')
+            let content = editor.textContent
+            
+            // Split content by periods, remove spaces before newlines, and join with newlines
+            content = content.replace(/\.\s*/g, '.\n')
+            
+            // Remove extra newlines
+            content = content.replace(/\n\s*\n/g, '\n')
+            
+            editor.textContent = content
+            updateDemoWordCount()
+            showDemoNotification('Đã tách dòng theo dấu chấm', 'success')
+        }
+        
+
+        
+        function demoFormatText() {
+            const editor = document.getElementById('demoEditor')
+            let content = editor.textContent
+            
+            // Capitalize first letter after periods
+            content = content.replace(/\.\s*([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ])/gi, (match, letter) => {
+                return '. ' + letter.toUpperCase()
+            })
+            
+            // Capitalize first letter at the beginning of lines
+            content = content.replace(/^([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ])/gm, (match, letter) => {
+                return letter.toUpperCase()
+            })
+            
+            // Add periods at the end of sentences if missing
+            content = content.replace(/([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ])\s*$/gm, '$1.')
+            
+            // Basic text formatting
+            content = content
+                .replace(/\s+/g, ' ') // Remove extra spaces
+                .replace(/\n\s*\n/g, '\n\n') // Normalize line breaks
+                .replace(/^\s+|\s+$/gm, '') // Trim lines
+                .replace(/\.\s*\./g, '.') // Remove double periods
+                .replace(/,\s*,/g, ',') // Remove double commas
+            
+            editor.textContent = content
+            updateDemoWordCount()
+            showDemoNotification('Đã định dạng văn bản', 'success')
+        }
+        
+        function demoClearFormatting() {
+            const editor = document.getElementById('demoEditor')
+            let content = editor.textContent
+            
+            // Remove all formatting
+            content = content
+                .replace(/\s+/g, ' ') // Normalize spaces
+                .replace(/\n+/g, '\n') // Normalize line breaks
+                .trim()
+            
+            editor.textContent = content
+            updateDemoWordCount()
+            showDemoNotification('Đã xóa định dạng', 'success')
+        }
+        
+        function updateDemoWordCount() {
+            const content = document.getElementById('demoEditor').textContent
+            const charCount = content.length
+            const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0
+            const lineCount = content.split('\n').length
+            
+            document.getElementById('demoCharCount').textContent = charCount.toLocaleString()
+            document.getElementById('demoWordCount').textContent = wordCount.toLocaleString()
+            document.getElementById('demoLineCount').textContent = lineCount.toLocaleString()
+        }
+        
+        function showDemoNotification(message, type = 'info') {
+            // Simple notification for demo
+            const alertClass = type === 'success' ? 'alert-success' : 
+                             type === 'error' ? 'alert-danger' : 
+                             type === 'warning' ? 'alert-warning' : 'alert-info'
+            
+            const alertDiv = document.createElement('div')
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show`
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `
+            
+            document.querySelector('.demo-container').insertBefore(alertDiv, document.querySelector('.demo-container').firstChild)
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove()
+                }
+            }, 3000)
+        }
+        
+        function testBetaInput() {
+            // Simulate beta input for a new task
+            window.open('beta-input.html?taskId=1&mode=input', '_blank')
+        }
+        
+        function testBetaEdit() {
+            // Simulate beta edit for existing task
+            window.open('beta-input.html?taskId=1&mode=edit', '_blank')
+        }
+        
+        function testBetaView() {
+            // Simulate beta view for non-editable user
+            window.open('beta-input.html?taskId=1&mode=view', '_blank')
+        }
+        
+        // Setup event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply text formatting on change
+            document.getElementById('demoFontFamily').addEventListener('change', applyDemoTextFormatting)
+            document.getElementById('demoFontSize').addEventListener('change', applyDemoTextFormatting)
+            document.getElementById('demoLineHeight').addEventListener('change', applyDemoTextFormatting)
+            
+            // Update word count on input
+            document.getElementById('demoEditor').addEventListener('input', updateDemoWordCount)
+            
+            // Initial word count
+            updateDemoWordCount()
+            applyDemoTextFormatting()
+        })
+        
+        function applyDemoTextFormatting() {
+            const editor = document.getElementById('demoEditor')
+            const fontFamily = document.getElementById('demoFontFamily').value
+            const fontSize = document.getElementById('demoFontSize').value
+            const lineHeight = document.getElementById('demoLineHeight').value
+            
+            editor.style.fontFamily = fontFamily
+            editor.style.fontSize = fontSize + 'px'
+            editor.style.lineHeight = lineHeight
+        }
+    </script>
+</body>
+</html> 

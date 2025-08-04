@@ -137,35 +137,7 @@
             border-radius: 5px;
         }
         
-        .spell-check-highlight {
-            background-color: #fff3cd;
-            border-bottom: 2px wavy #ffc107;
-        }
-        
-        .spell-check-suggestions {
-            position: absolute;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .spell-suggestion {
-            padding: 8px 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .spell-suggestion:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .spell-suggestion:last-child {
-            border-bottom: none;
-        }
+
         
         .readonly-mode {
             background-color: #f8f9fa;
@@ -280,9 +252,7 @@
                                 <button class="btn btn-outline-primary action-btn" onclick="splitByPeriods()">
                                     <i class="fas fa-cut me-1"></i>Tách dòng
                                 </button>
-                                <button class="btn btn-outline-warning action-btn" onclick="toggleSpellCheck()">
-                                    <i class="fas fa-spell-check me-1"></i>Kiểm tra chính tả
-                                </button>
+                                
                                 <button class="btn btn-outline-info action-btn" onclick="formatText()">
                                     <i class="fas fa-magic me-1"></i>Định dạng
                                 </button>
@@ -378,18 +348,6 @@
         let currentTask = null
         let taskId = null
         let mode = 'input' // 'input', 'edit', or 'view'
-        let spellCheckEnabled = false
-        let spellCheckSuggestions = []
-        
-        // Vietnamese dictionary for spell checking (basic)
-        const vietnameseWords = [
-            'công', 'việc', 'dự', 'án', 'nhập', 'liệu', 'beta', 'hoàn', 'thành', 'quản', 'lý',
-            'boss', 'nhân', 'viên', 'task', 'project', 'deadline', 'status', 'assignee', 'description',
-            'nội', 'dung', 'lưu', 'tải', 'xuống', 'file', 'chỉnh', 'sửa', 'xem', 'nhập', 'cập', 'nhật',
-            'font', 'chữ', 'cỡ', 'dòng', 'kiểm', 'tra', 'chính', 'tả', 'tách', 'định', 'dạng',
-            'thông', 'báo', 'lỗi', 'thành', 'công', 'cảnh', 'báo', 'đang', 'tải', 'vui', 'lòng',
-            'không', 'có', 'quyền', 'truy', 'cập', 'task', 'này', 'đăng', 'nhập', 'từ', 'trang', 'chính'
-        ]
         
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
@@ -591,9 +549,6 @@
             document.getElementById('fontFamily').addEventListener('change', applyTextFormatting)
             document.getElementById('fontSize').addEventListener('change', applyTextFormatting)
             document.getElementById('lineHeight').addEventListener('change', applyTextFormatting)
-            
-            // Spell check on input
-            contentEditor.addEventListener('input', debounce(checkSpelling, 1000))
         }
         
         function applyTextFormatting() {
@@ -622,8 +577,8 @@
             const contentEditor = document.getElementById('betaContent')
             let content = contentEditor.value
             
-            // Split content by periods and join with newlines
-            content = content.replace(/\./g, '.\n')
+            // Split content by periods, remove spaces before newlines, and join with newlines
+            content = content.replace(/\.\s*/g, '.\n')
             
             // Remove extra newlines
             content = content.replace(/\n\s*\n/g, '\n')
@@ -633,50 +588,22 @@
             showNotification('Đã tách dòng theo dấu chấm', 'success')
         }
         
-        function toggleSpellCheck() {
-            spellCheckEnabled = !spellCheckEnabled
-            
-            if (spellCheckEnabled) {
-                checkSpelling()
-                showNotification('Đã bật kiểm tra chính tả', 'success')
-            } else {
-                clearSpellCheckHighlights()
-                showNotification('Đã tắt kiểm tra chính tả', 'info')
-            }
-        }
-        
-        function checkSpelling() {
-            if (!spellCheckEnabled) return
-            
-            const contentEditor = document.getElementById('betaContent')
-            const content = contentEditor.value
-            
-            // Simple spell check for Vietnamese words
-            const words = content.split(/\s+/)
-            let hasErrors = false
-            
-            words.forEach((word, index) => {
-                const cleanWord = word.replace(/[^\wàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/gi, '')
-                
-                if (cleanWord.length > 2 && !vietnameseWords.includes(cleanWord.toLowerCase())) {
-                    hasErrors = true
-                }
-            })
-            
-            if (hasErrors) {
-                showNotification('Phát hiện lỗi chính tả', 'warning')
-            }
-        }
-        
-        function clearSpellCheckHighlights() {
-            // Remove any spell check highlights
-            const contentEditor = document.getElementById('betaContent')
-            // This is a simplified version - in a real implementation you'd need more sophisticated highlighting
-        }
-        
         function formatText() {
             const contentEditor = document.getElementById('betaContent')
             let content = contentEditor.value
+            
+            // Capitalize first letter after periods
+            content = content.replace(/\.\s*([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ])/gi, (match, letter) => {
+                return '. ' + letter.toUpperCase()
+            })
+            
+            // Capitalize first letter at the beginning of lines
+            content = content.replace(/^([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ])/gm, (match, letter) => {
+                return letter.toUpperCase()
+            })
+            
+            // Add periods at the end of sentences if missing
+            content = content.replace(/([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ])\s*$/gm, '$1.')
             
             // Basic text formatting
             content = content
