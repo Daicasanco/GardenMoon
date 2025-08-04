@@ -3074,10 +3074,10 @@ function renderBetaTasksTable() {
         let betaLinkDisplay = ''
         
         if (currentUser && (isBoss(currentUser) || currentUser.role === 'manager')) {
-            // Boss/Manager: Luôn thấy button "Xem Beta" nếu có dữ liệu
+            // Boss/Manager: Luôn thấy button "Chỉnh sửa Beta" nếu có dữ liệu
             if (task.beta_link) {
-                betaLinkDisplay = `<button class="btn btn-sm btn-outline-success" onclick="viewBetaData(${task.id})">
-                    <i class="fas fa-eye"></i> Xem Beta
+                betaLinkDisplay = `<button class="btn btn-sm btn-outline-primary" onclick="editBetaData(${task.id})">
+                    <i class="fas fa-edit"></i> Chỉnh sửa Beta
                 </button>`
             } else {
                 betaLinkDisplay = '<span class="text-muted">-</span>'
@@ -3779,15 +3779,8 @@ function exportReportToCSV() {
 
 // Beta Data Functions
 function viewBetaData(taskId) {
-    const task = tasks.find(t => t.id === taskId)
-    if (task && task.beta_link) {
-        // Tạo blob URL để hiển thị nội dung
-        const blob = new Blob([task.beta_link], { type: 'text/plain;charset=utf-8' })
-        const url = URL.createObjectURL(blob)
-        window.open(url, '_blank')
-    } else {
-        showNotification('Không có dữ liệu beta để xem', 'error')
-    }
+    // Chuyển hướng đến edit mode thay vì chỉ xem
+    editBetaData(taskId)
 }
 
 function inputBetaData(taskId) {
