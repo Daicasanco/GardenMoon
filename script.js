@@ -3218,6 +3218,9 @@ async function editBetaTask(id) {
     // Set field permissions for beta tasks (this will handle UI reset)
     setFieldPermissions('beta')
     
+    // Show status field
+    document.getElementById('taskStatusField').style.display = 'block'
+    
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('taskModal'))
     modal.show()
