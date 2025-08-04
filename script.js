@@ -3827,6 +3827,20 @@ function populateBetaFilesTable(betaTasks) {
     const tbody = document.getElementById('betaFilesTableBody')
     tbody.innerHTML = ''
     
+    // Sắp xếp betaTasks theo số chap
+    betaTasks.sort((a, b) => {
+        const extractNumber = (name) => {
+            const match = (name || '').match(/\d+/)
+            return match ? parseInt(match[0], 10) : null
+        }
+        const numA = extractNumber(a.name)
+        const numB = extractNumber(b.name)
+        if (numA !== null && numB !== null) {
+            return numA - numB
+        }
+        return (a.name || '').localeCompare(b.name || '', undefined, { numeric: true, sensitivity: 'base' })
+    })
+    
     betaTasks.forEach(task => {
         const assignee = window.allEmployees.find(e => e.id === task.assignee_id)
         const row = document.createElement('tr')
