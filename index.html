@@ -982,7 +982,7 @@
 
         <div class="row">
             <div class="col-12">
-                <div class="card">
+                <div class="card activity-history-card">
                     <div class="card-header">
                         <h5 class="mb-0">
                             <i class="fas fa-history me-2"></i>
@@ -991,7 +991,7 @@
                     </div>
                     <div class="card-body">
                         <!-- Employee Activity Filters -->
-                        <div class="row mb-3">
+                        <div class="row mb-3 activity-filters">
                             <div class="col-md-4">
                                 <label class="form-label">Lọc theo nhân viên:</label>
                                 <select class="form-select" id="employeeActivityFilter" onchange="renderActivityHistoryTable()">
@@ -1009,7 +1009,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">&nbsp;</label>
-                                <button class="btn btn-secondary w-100" onclick="refreshActivityHistory()">
+                                <button class="btn btn-refresh-activity w-100" onclick="refreshActivityHistory()">
                                     <i class="fas fa-sync-alt me-1"></i>Làm mới
                                 </button>
                             </div>
@@ -1017,7 +1017,7 @@
 
                         <!-- Activity History Table -->
                         <div class="table-responsive">
-                            <table class="table table-hover" id="activityHistoryTable">
+                            <table class="table table-hover activity-history-table" id="activityHistoryTable">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>Nhân viên</th>

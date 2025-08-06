@@ -4281,35 +4281,39 @@ function renderActivityHistoryTable() {
             : 'Chưa có'
         
         const rowClass = item.activityStatus === 'warning' ? 'warning-row' : 
-                        item.activityStatus === 'inactive' ? 'inactive-row' : ''
+                        item.activityStatus === 'inactive' ? 'inactive-row' : 
+                        item.activityStatus === 'active' ? 'active-row' : ''
         
         return `
             <tr class="activity-history-row ${rowClass}">
                 <td>
-                    <div class="d-flex align-items-center">
-                        <div class="avatar-sm me-2">
-                            <i class="fas fa-user-circle fa-2x text-primary"></i>
+                    <div class="employee-info">
+                        <div class="employee-avatar">
+                            ${item.employee.name.charAt(0).toUpperCase()}
                         </div>
-                        <div>
-                            <strong>${item.employee.name}</strong>
-                            <br>
-                            <small class="text-muted">${item.employee.email}</small>
+                        <div class="employee-details">
+                            <div class="employee-name">${item.employee.name}</div>
+                            <div class="employee-email">${item.employee.email}</div>
                         </div>
                     </div>
                 </td>
                 <td>
-                    <span class="badge badge-gradient-blue">${item.employee.role}</span>
+                    <span class="role-badge">${item.employee.role}</span>
                 </td>
                 <td>
-                    <span class="text-truncate d-inline-block" style="max-width: 200px;" title="${item.lastTaskName}">
+                    <span class="task-name" title="${item.lastTaskName}">
                         ${item.lastTaskName}
                     </span>
                 </td>
                 <td>
-                    <span class="text-muted">${item.lastClaimDate ? new Date(item.lastClaimDate).toLocaleDateString('vi-VN') : 'Chưa có'}</span>
+                    <span class="date-info ${item.lastClaimDate ? 'available' : 'unavailable'}">
+                        ${item.lastClaimDate ? new Date(item.lastClaimDate).toLocaleDateString('vi-VN') : 'Chưa có'}
+                    </span>
                 </td>
                 <td>
-                    <span class="text-muted">${lastCompletionDate}</span>
+                    <span class="date-info ${lastCompletionDate !== 'Chưa có' ? 'available' : 'unavailable'}">
+                        ${lastCompletionDate}
+                    </span>
                 </td>
                 <td>
                     <span class="inactivity-duration ${inactivityClass}">${inactivityText}</span>
@@ -4322,14 +4326,16 @@ function renderActivityHistoryTable() {
                     }</span>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="viewEmployeeDetails('${item.employee.id}')" title="Xem chi tiết">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    ${item.activityStatus === 'warning' || item.activityStatus === 'inactive' ? 
-                        `<button class="btn btn-sm btn-outline-warning ms-1" onclick="sendReminder('${item.employee.id}')" title="Gửi nhắc nhở">
-                            <i class="fas fa-bell"></i>
-                        </button>` : ''
-                    }
+                    <div class="action-buttons">
+                        <button class="btn-action-detail" onclick="viewEmployeeDetails('${item.employee.id}')" title="Xem chi tiết">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        ${item.activityStatus === 'warning' || item.activityStatus === 'inactive' ? 
+                            `<button class="btn-action-reminder" onclick="sendReminder('${item.employee.id}')" title="Gửi nhắc nhở">
+                                <i class="fas fa-bell"></i>
+                            </button>` : ''
+                        }
+                    </div>
                 </td>
             </tr>
         `
