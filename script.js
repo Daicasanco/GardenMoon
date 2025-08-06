@@ -2193,10 +2193,8 @@ function setupEventListeners() {
         handleTransferTask()
     })
     
-    // Auto-check overdue tasks (chỉ tạo 1 instance)
-    if (!window.overdueInterval) {
-        window.overdueInterval = setInterval(checkOverdueTasks, 60000) // Check every minute
-    }
+    // Auto-check overdue tasks
+    setInterval(checkOverdueTasks, 60000) // Check every minute
     
     // Bulk rate functionality event listeners
     const rateTargetSelect = document.getElementById('projectRateTarget')
@@ -2229,11 +2227,8 @@ function checkOverdueTasks() {
     }
 }
 
-// Initialize overdue check on load (chỉ chạy 1 lần)
-if (!window.overdueInitialized) {
-    checkOverdueTasks()
-    window.overdueInitialized = true
-} 
+// Initialize overdue check on load
+checkOverdueTasks() 
 
 // Employee Management Functions
 function showEmployeesList() {
@@ -2380,18 +2375,8 @@ function updateAllCountdowns() {
         }
     });
 }
-// Tự động cập nhật countdown mỗi giây (chỉ tạo 1 instance)
-if (!window.countdownInterval) {
-    window.countdownInterval = setInterval(updateAllCountdowns, 1000);
-}
-
-// Helper function để re-render tables khi cần
-function reRenderTablesIfNeeded() {
-    if (currentProjectId && document.getElementById('tasksView') && document.getElementById('tasksView').style.display !== 'none') {
-        renderTasksTable()
-        renderBetaTasksTable()
-    }
-}
+// Tự động cập nhật countdown mỗi giây
+setInterval(updateAllCountdowns, 1000);
 
 // --- LEADERBOARD FUNCTIONS ---
 async function loadLeaderboards() {
@@ -2482,7 +2467,10 @@ async function loadAllTimeLeaderboard() {
         renderLeaderboard('allTimeLeaderboard', leaderboardData, 'all-time')
         
         // Re-render tables to apply updated rank-based styling
-        reRenderTablesIfNeeded()
+        if (currentProjectId) {
+            renderTasksTable()
+            renderBetaTasksTable()
+        }
     } catch (error) {
         console.error('Error loading all-time leaderboard:', error)
     }
@@ -2570,7 +2558,10 @@ async function loadMonthlyLeaderboard() {
         renderLeaderboard('monthlyLeaderboard', leaderboardData, 'monthly')
         
         // Re-render tables to apply updated rank-based styling
-        reRenderTablesIfNeeded()
+        if (currentProjectId) {
+            renderTasksTable()
+            renderBetaTasksTable()
+        }
     } catch (error) {
         console.error('Error loading monthly leaderboard:', error)
     }
