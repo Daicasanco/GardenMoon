@@ -52,11 +52,7 @@ function hasManagerOrBossPermissions(user) {
 
 // Helper function to check if user is boss
 function isBoss(user) {
-    console.log('isBoss - user:', user)
-    console.log('isBoss - user.role:', user?.role)
-    const result = user && user.role === 'boss'
-    console.log('isBoss - result:', result)
-    return result
+    return user && user.role === 'boss'
 }
 
 // View Management Functions
@@ -111,25 +107,22 @@ function initializeApp() {
     if (savedUser) {
         currentUser = JSON.parse(savedUser)
         updateUserInterface()
+        
+        // Load data from Supabase only if user is logged in
+        loadDataFromSupabase()
+        
+        // Set up event listeners
+        setupEventListeners()
+        
+        
+        
+        // Set up realtime subscriptions
+        setupRealtimeSubscriptions()
+    } else {
+        // User not logged in - show login modal and hide content
+        showLoginModal()
+        hideAllContent()
     }
-    
-    // Load data from Supabase
-    loadDataFromSupabase()
-    
-    // Set up event listeners
-    setupEventListeners()
-    
-    // Debug: Add click listener to addTaskBtn
-    const addTaskBtn = document.getElementById('addTaskBtn')
-    if (addTaskBtn) {
-        addTaskBtn.addEventListener('click', function(e) {
-            console.log('addTaskBtn clicked!')
-            console.log('onclick handler:', this.onclick)
-        })
-    }
-    
-    // Set up realtime subscriptions
-    setupRealtimeSubscriptions()
 }
 
 // Supabase Data Management
@@ -149,9 +142,7 @@ async function loadDataFromSupabase() {
         // Filter for managers (role 'manager') for manager filter
         const managers = window.allEmployees.filter(emp => emp.role === 'manager' || emp.role === 'boss')
         
-        console.log('Loaded allEmployees:', window.allEmployees)
-        console.log('Filtered employees:', employees)
-        console.log('Filtered managers:', managers)
+
         
         // Update manager filter dropdown
         updateManagerFilter(managers)
@@ -231,10 +222,7 @@ async function loadTasks(projectId = null) {
         if (error) throw error
         tasks = data || []
         
-        console.log(`Loaded ${tasks.length} tasks total`)
-        if (projectId) {
-            console.log(`Tasks for project ${projectId}:`, tasks.filter(t => t.project_id === projectId))
-        }
+
         
         renderTasksTable()
         
@@ -247,39 +235,7 @@ async function loadTasks(projectId = null) {
     }
 }
 
-// Function to manually refresh task counts for debugging
-function refreshTaskCounts() {
-    console.log('Refreshing task counts...')
-    console.log('Current tasks:', tasks)
-    console.log('Current projects:', projects)
-    
-    projects.forEach(project => {
-        const taskCount = tasks.filter(t => t.project_id === project.id).length
-        console.log(`Project ${project.id} (${project.name}): ${taskCount} tasks`)
-    })
-    
-    renderProjectsTable()
-}
 
-// Function to test employee visibility
-function testEmployeeVisibility() {
-    console.log('=== Testing Employee Visibility ===')
-    console.log('Current user:', currentUser)
-    console.log('Current user role:', currentUser?.role)
-    console.log('Total projects loaded:', projects.length)
-    console.log('Projects by status:')
-    const statusCounts = {}
-    projects.forEach(project => {
-        statusCounts[project.status] = (statusCounts[project.status] || 0) + 1
-    })
-    console.log(statusCounts)
-    console.log('Total tasks loaded:', tasks.length)
-    console.log('Leaderboard containers exist:', {
-        allTime: !!document.getElementById('allTimeLeaderboard'),
-        monthly: !!document.getElementById('monthlyLeaderboard')
-    })
-    console.log('=== End Test ===')
-}
 
 // Realtime Subscriptions
 function setupRealtimeSubscriptions() {
@@ -287,7 +243,6 @@ function setupRealtimeSubscriptions() {
     supabase
         .channel('projects')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, payload => {
-            console.log('Project change:', payload)
             loadProjects()
             showNotification('Dữ liệu dự án đã được cập nhật', 'info')
         })
@@ -373,20 +328,20 @@ function updateUserInterface() {
     const addProjectBtn = document.getElementById('addProjectBtn')
     const addTaskBtn = document.getElementById('addTaskBtn')
     const viewEmployeesBtn = document.getElementById('viewEmployeesBtn')
+    const loginMessage = document.getElementById('loginMessage')
+    const mainContent = document.getElementById('mainContent')
     
     if (currentUser) {
+        // User is logged in - show content and hide login message
         currentUserSpan.textContent = currentUser.name
         addProjectBtn.style.display = hasManagerOrBossPermissions(currentUser) ? 'inline-block' : 'none'
         
-            // Chỉ hiện nút "Thêm Deadline" khi ở trong tasks view và là manager hoặc boss
-    const tasksView = document.getElementById('tasksView')
-    const isInTasksView = tasksView && tasksView.style.display !== 'none'
-    addTaskBtn.style.display = (hasManagerOrBossPermissions(currentUser) && isInTasksView) ? 'inline-block' : 'none'
-    
-    // Debug logging
-    console.log('updateUserInterface - currentUser.role:', currentUser.role)
-    console.log('updateUserInterface - isInTasksView:', isInTasksView)
-    console.log('updateUserInterface - addTaskBtn.style.display:', addTaskBtn.style.display)
+        // Chỉ hiện nút "Thêm Deadline" khi ở trong tasks view và là manager hoặc boss
+        const tasksView = document.getElementById('tasksView')
+        const isInTasksView = tasksView && tasksView.style.display !== 'none'
+        addTaskBtn.style.display = (hasManagerOrBossPermissions(currentUser) && isInTasksView) ? 'inline-block' : 'none'
+        
+
         
         viewEmployeesBtn.style.display = hasManagerOrBossPermissions(currentUser) ? 'inline-block' : 'none'
         
@@ -395,6 +350,10 @@ function updateUserInterface() {
         if (editAnnouncementBtn) {
             editAnnouncementBtn.style.display = hasManagerOrBossPermissions(currentUser) ? 'block' : 'none'
         }
+        
+        // Show main content and hide login message
+        if (mainContent) mainContent.style.display = 'block'
+        if (loginMessage) loginMessage.style.display = 'none'
         
         // Update assignee dropdowns
         updateAssigneeDropdowns()
@@ -405,10 +364,26 @@ function updateUserInterface() {
         // Test employee visibility for debugging
         testEmployeeVisibility()
     } else {
+        // User not logged in - hide content and show login message
         currentUserSpan.textContent = 'Guest'
         addProjectBtn.style.display = 'none'
         addTaskBtn.style.display = 'none'
         viewEmployeesBtn.style.display = 'none'
+        
+        // Hide main content and show login message
+        if (mainContent) mainContent.style.display = 'none'
+        if (loginMessage) {
+            loginMessage.style.display = 'block'
+            loginMessage.innerHTML = `
+                <div class="text-center mt-5">
+                    <h3><i class="fas fa-lock text-warning"></i> Yêu cầu đăng nhập</h3>
+                    <p class="text-muted">Vui lòng đăng nhập để truy cập hệ thống quản lý dự án.</p>
+                    <button class="btn btn-primary" onclick="showLoginModal()">
+                        <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                    </button>
+                </div>
+            `
+        }
     }
 }
 
@@ -871,10 +846,6 @@ async function deleteProject(id) {
 
 // Task Management
 async function addTask() {
-    console.log('addTask() called')
-    console.log('currentUser:', currentUser)
-    console.log('currentTaskType:', currentTaskType)
-    console.log('currentProjectId:', currentProjectId)
     
     const nameInput = document.getElementById('taskName');
     const deadlineInput = document.getElementById('taskDeadline');
@@ -887,7 +858,7 @@ async function addTask() {
     const deadline = deadlineInput ? deadlineInput.value : '';
     const priority = priorityInput ? priorityInput.value : '';
 
-    console.log('Form values:', { name, deadline, priority, projectId, currentTaskType })
+    
 
     if (!name || !deadline || !projectId) {
         showNotification('Vui lòng điền đầy đủ thông tin bắt buộc', 'error')
@@ -1003,9 +974,6 @@ async function claimTask(taskId) {
     }
     
     try {
-        console.log('Claiming task:', taskId)
-        console.log('Current user:', currentUser)
-        
         // Kiểm tra task hiện tại
         const currentTask = tasks.find(t => t.id === taskId)
         if (!currentTask) {
@@ -1027,10 +995,7 @@ async function claimTask(taskId) {
             }
         }
         
-        console.log('Current task before update:', currentTask)
-        
         // Thực hiện update với điều kiện assignee_id IS NULL
-        console.log('Updating task with user ID:', currentUser.id)
         const { data, error } = await supabase
             .from('tasks')
             .update({
@@ -1042,30 +1007,21 @@ async function claimTask(taskId) {
             .is('assignee_id', null) // Chỉ update nếu chưa có người nhận
             .select()
         
-        if (error) {
-            console.error('Supabase error:', error)
-            throw error
-        }
-        
-        console.log('Update result:', data)
+        if (error) throw error
         
         if (data && data.length > 0) {
             showNotification('Đã nhận công việc thành công!', 'success')
             
             // Cập nhật local data ngay lập tức
             const updatedTask = data[0]
-            console.log('Updated task:', updatedTask)
             
             // Tìm và cập nhật task trong mảng local
             const taskIndex = tasks.findIndex(t => t.id === taskId)
             if (taskIndex !== -1) {
                 tasks[taskIndex] = updatedTask
-                console.log('Updated local task at index:', taskIndex)
-                console.log('Updated task data:', tasks[taskIndex])
             }
             
             // Re-render appropriate table after a short delay
-            console.log('Re-rendering table...')
             setTimeout(() => {
                 if (currentTaskType === 'beta') {
                     renderBetaTasksTable()
@@ -1075,7 +1031,6 @@ async function claimTask(taskId) {
             }, 100)
             
         } else {
-            console.log('No rows updated - task may have been claimed by someone else')
             showNotification('Công việc đã được nhận bởi người khác', 'error')
         }
         
@@ -1539,8 +1494,7 @@ function renderProjectsTable() {
     const tbody = document.getElementById('projectsTableBody')
     tbody.innerHTML = ''
     
-    console.log('Rendering projects table with', filteredProjects.length, 'projects')
-    console.log('Current tasks array has', tasks.length, 'tasks')
+
     
     if (filteredProjects.length === 0) {
         tbody.innerHTML = `
@@ -1620,22 +1574,13 @@ function renderTasksTable() {
     const statusFilter = document.getElementById('taskStatusFilter')?.value || ''
     const assigneeFilter = document.getElementById('taskAssigneeFilter')?.value || ''
     
-    console.log('Filtering tasks...')
-    console.log('Status filter:', statusFilter)
-    console.log('Assignee filter:', assigneeFilter)
-    console.log('Current project ID:', currentProjectId)
-    console.log('Total tasks:', tasks.length)
-    
     let projectTasks = tasks.filter(t => t.project_id === currentProjectId && t.task_type === 'rv')
-    console.log('Tasks in current project:', projectTasks.length)
     
     if (statusFilter) {
         projectTasks = projectTasks.filter(t => t.status === statusFilter)
-        console.log('After status filter:', projectTasks.length)
     }
     if (assigneeFilter) {
         projectTasks = projectTasks.filter(t => String(t.assignee_id) === assigneeFilter)
-        console.log('After assignee filter:', projectTasks.length)
     }
     
     // Sắp xếp theo tên deadline A-Z
@@ -1870,6 +1815,34 @@ function showLoginModal() {
     modal.show()
 }
 
+function hideAllContent() {
+    // Hide all main content sections
+    const mainContent = document.getElementById('mainContent')
+    const projectsView = document.getElementById('projectsView')
+    const tasksView = document.getElementById('tasksView')
+    const dashboardView = document.getElementById('dashboardView')
+    
+    if (mainContent) mainContent.style.display = 'none'
+    if (projectsView) projectsView.style.display = 'none'
+    if (tasksView) tasksView.style.display = 'none'
+    if (dashboardView) dashboardView.style.display = 'none'
+    
+    // Show login message
+    const loginMessage = document.getElementById('loginMessage')
+    if (loginMessage) {
+        loginMessage.style.display = 'block'
+        loginMessage.innerHTML = `
+            <div class="text-center mt-5">
+                <h3><i class="fas fa-lock text-warning"></i> Yêu cầu đăng nhập</h3>
+                <p class="text-muted">Vui lòng đăng nhập để truy cập hệ thống quản lý dự án.</p>
+                <button class="btn btn-primary" onclick="showLoginModal()">
+                    <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                </button>
+            </div>
+        `
+    }
+}
+
 async function showAddProjectModal() {
     if (!currentUser) {
         showNotification('Vui lòng đăng nhập để Thêm Truyện', 'error')
@@ -1942,9 +1915,6 @@ function toggleBatchCreate() {
 }
 
 function showAddTaskModal() {
-    console.log('showAddTaskModal() called')
-    console.log('currentUser:', currentUser)
-    console.log('currentProjectId:', currentProjectId)
     
     if (!currentUser) {
         showNotification('Vui lòng đăng nhập để Thêm Deadline', 'error')
@@ -2223,8 +2193,10 @@ function setupEventListeners() {
         handleTransferTask()
     })
     
-    // Auto-check overdue tasks
-    setInterval(checkOverdueTasks, 60000) // Check every minute
+    // Auto-check overdue tasks (chỉ tạo 1 instance)
+    if (!window.overdueInterval) {
+        window.overdueInterval = setInterval(checkOverdueTasks, 60000) // Check every minute
+    }
     
     // Bulk rate functionality event listeners
     const rateTargetSelect = document.getElementById('projectRateTarget')
@@ -2257,8 +2229,11 @@ function checkOverdueTasks() {
     }
 }
 
-// Initialize overdue check on load
-checkOverdueTasks() 
+// Initialize overdue check on load (chỉ chạy 1 lần)
+if (!window.overdueInitialized) {
+    checkOverdueTasks()
+    window.overdueInitialized = true
+} 
 
 // Employee Management Functions
 function showEmployeesList() {
@@ -2323,9 +2298,6 @@ function showEmployeesList() {
 
 function updateAssigneeDropdowns() {
     const assigneeSelects = document.querySelectorAll('#taskAssignee')
-    
-    console.log('Updating assignee dropdowns, employees count:', employees.length)
-    console.log('Employees data:', employees)
     
     assigneeSelects.forEach(select => {
         select.innerHTML = '<option value="">Không chỉ định (để nhân viên tự nhận)</option>'
@@ -2408,19 +2380,27 @@ function updateAllCountdowns() {
         }
     });
 }
-// Tự động cập nhật countdown mỗi giây
-setInterval(updateAllCountdowns, 1000);
+// Tự động cập nhật countdown mỗi giây (chỉ tạo 1 instance)
+if (!window.countdownInterval) {
+    window.countdownInterval = setInterval(updateAllCountdowns, 1000);
+}
+
+// Helper function để re-render tables khi cần
+function reRenderTablesIfNeeded() {
+    if (currentProjectId && document.getElementById('tasksView') && document.getElementById('tasksView').style.display !== 'none') {
+        renderTasksTable()
+        renderBetaTasksTable()
+    }
+}
 
 // --- LEADERBOARD FUNCTIONS ---
 async function loadLeaderboards() {
     try {
-        console.log('Loading leaderboards...')
         // Load all-time leaderboard (TOP 5)
         await loadAllTimeLeaderboard()
         
         // Load monthly leaderboard (TOP 10)
         await loadMonthlyLeaderboard()
-        console.log('Leaderboards loaded successfully')
     } catch (error) {
         console.error('Error loading leaderboards:', error)
     }
@@ -2496,16 +2476,13 @@ async function loadAllTimeLeaderboard() {
             })
             .slice(0, 5) // TOP 5
 
-        console.log('All-time leaderboard data:', leaderboardData)
+
         // Lưu dữ liệu vào window object để sử dụng cho màu sắc
         window.allTimeLeaderboardData = leaderboardData
         renderLeaderboard('allTimeLeaderboard', leaderboardData, 'all-time')
         
         // Re-render tables to apply updated rank-based styling
-        if (currentProjectId) {
-            renderTasksTable()
-            renderBetaTasksTable()
-        }
+        reRenderTablesIfNeeded()
     } catch (error) {
         console.error('Error loading all-time leaderboard:', error)
     }
@@ -2587,16 +2564,13 @@ async function loadMonthlyLeaderboard() {
             })
             .slice(0, 10) // TOP 10
 
-        console.log('Monthly leaderboard data:', leaderboardData)
+
         // Lưu dữ liệu vào window object để sử dụng cho màu sắc
         window.monthlyLeaderboardData = leaderboardData
         renderLeaderboard('monthlyLeaderboard', leaderboardData, 'monthly')
         
         // Re-render tables to apply updated rank-based styling
-        if (currentProjectId) {
-            renderTasksTable()
-            renderBetaTasksTable()
-        }
+        reRenderTablesIfNeeded()
     } catch (error) {
         console.error('Error loading monthly leaderboard:', error)
     }
@@ -3631,22 +3605,7 @@ function getAssigneeColorClass(rankInfo) {
 }
 
 // Test function để kiểm tra rank-based styling
-function testRankBasedStyling() {
-    console.log('=== Testing Rank-Based Styling ===')
-    console.log('All-time leaderboard data:', window.allTimeLeaderboardData)
-    console.log('Monthly leaderboard data:', window.monthlyLeaderboardData)
-    
-    // Test với một số employee IDs
-    const testEmployeeIds = ['test-1', 'test-2', 'test-3']
-    
-    testEmployeeIds.forEach(employeeId => {
-        const rank = getEmployeeRank(employeeId)
-        const colorClass = getAssigneeColorClass(rank)
-        console.log(`Employee ${employeeId}:`, { rank, colorClass })
-    })
-    
-    console.log('=== End Test ===')
-}
+
 
 // Project Reporting Functions
 async function showProjectReport(projectId) {
