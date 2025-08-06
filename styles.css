@@ -2057,3 +2057,139 @@ body {
     border-color: #80bdff !important;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
 } 
+
+/* Activity Status Badges */
+.badge-activity-active {
+    background-color: var(--success-color);
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(25, 135, 84, 0.3);
+    transition: all 0.2s ease-in-out;
+}
+
+.badge-activity-inactive {
+    background-color: var(--danger-color);
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+    transition: all 0.2s ease-in-out;
+}
+
+.badge-activity-warning {
+    background-color: var(--warning-color);
+    color: var(--dark-color);
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Activity History Table Styles */
+.activity-history-row {
+    transition: all 0.3s ease;
+}
+
+.activity-history-row:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.activity-history-row.warning-row {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid var(--warning-color);
+}
+
+.activity-history-row.inactive-row {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 4px solid var(--danger-color);
+}
+
+/* Inactivity Duration Display */
+.inactivity-duration {
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.inactivity-duration.warning {
+    color: var(--warning-color);
+}
+
+.inactivity-duration.danger {
+    color: var(--danger-color);
+}
+
+.inactivity-duration.success {
+    color: var(--success-color);
+}
+
+/* Activity History Filters */
+.activity-filters {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.activity-filters .form-label {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+.activity-filters .form-select {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.activity-filters .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Activity History Card */
+.activity-history-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.activity-history-card .card-header {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+.activity-history-card .card-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Responsive adjustments for activity history */
+@media (max-width: 768px) {
+    .activity-filters .row > div {
+        margin-bottom: 1rem;
+    }
+    
+    .activity-history-table th,
+    .activity-history-table td {
+        font-size: 0.9em;
+        padding: 0.5rem;
+    }
+    
+    .badge-activity-active,
+    .badge-activity-inactive,
+    .badge-activity-warning {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.8em;
+    }
+} 

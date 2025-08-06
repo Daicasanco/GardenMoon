@@ -396,6 +396,10 @@ function updateUserInterface() {
         console.log('updateUserInterface - addTaskBtn.style.display:', addTaskBtn.style.display)
         
         viewEmployeesBtn.style.display = hasManagerOrBossPermissions(currentUser) ? 'inline-block' : 'none'
+        const viewActivityHistoryBtn = document.getElementById('viewActivityHistoryBtn')
+        if (viewActivityHistoryBtn) {
+            viewActivityHistoryBtn.style.display = hasManagerOrBossPermissions(currentUser) ? 'inline-block' : 'none'
+        }
         
         // Show/hide announcement edit button for managers and bosses
         const editAnnouncementBtn = document.getElementById('editAnnouncementBtn')
@@ -421,6 +425,10 @@ function updateUserInterface() {
         addProjectBtn.style.display = 'none'
         addTaskBtn.style.display = 'none'
         viewEmployeesBtn.style.display = 'none'
+        const viewActivityHistoryBtn = document.getElementById('viewActivityHistoryBtn')
+        if (viewActivityHistoryBtn) {
+            viewActivityHistoryBtn.style.display = 'none'
+        }
         
         // Hide main content and show login message
         if (mainContent) mainContent.style.display = 'none'
@@ -1063,6 +1071,8 @@ async function claimTask(taskId) {
             .update({
                 assignee_id: currentUser.id,
                 status: 'in-progress',
+                claimed_at: new Date().toISOString(),
+                started_at: new Date().toISOString(),
                 updated_at: new Date().toISOString()
             })
             .eq('id', taskId)
@@ -1190,6 +1200,7 @@ async function unclaimTask(taskId) {
             .update({
                 assignee_id: null,
                 status: 'pending',
+                unclaimed_at: new Date().toISOString(),
                 updated_at: new Date().toISOString()
             })
             .eq('id', taskId)
@@ -1528,6 +1539,8 @@ async function changeTaskStatus(id, newStatus) {
             .from('tasks')
             .update({
                 status: newStatus,
+                started_at: newStatus === 'in-progress' ? new Date().toISOString() : null,
+                completed_at: newStatus === 'completed' ? new Date().toISOString() : null,
                 updated_at: new Date().toISOString()
             })
             .eq('id', id)
@@ -1903,11 +1916,13 @@ function hideAllContent() {
     const projectsView = document.getElementById('projectsView')
     const tasksView = document.getElementById('tasksView')
     const dashboardView = document.getElementById('dashboardView')
+    const activityHistoryView = document.getElementById('activityHistoryView')
     
     if (mainContent) mainContent.style.display = 'none'
     if (projectsView) projectsView.style.display = 'none'
     if (tasksView) tasksView.style.display = 'none'
     if (dashboardView) dashboardView.style.display = 'none'
+    if (activityHistoryView) activityHistoryView.style.display = 'none'
     
     // Show login message
     const loginMessage = document.getElementById('loginMessage')
@@ -3338,6 +3353,8 @@ async function claimBetaTask(taskId) {
             .from('tasks')
             .update({ 
                 assignee_id: currentUser.id,
+                claimed_at: new Date().toISOString(),
+                started_at: new Date().toISOString(),
                 updated_at: new Date().toISOString()
             })
             .eq('id', taskId)
@@ -4071,4 +4088,265 @@ async function downloadSeparateBetaFiles(taskIds) {
             console.error(`Error downloading file for task ${task.id}:`, error)
         }
     }
+}
+
+// Activity History Functions
+function showActivityHistoryView() {
+    // Hide other views
+    const projectsView = document.getElementById('projectsView')
+    const tasksView = document.getElementById('tasksView')
+    const dashboardView = document.getElementById('dashboardView')
+    const activityHistoryView = document.getElementById('activityHistoryView')
+    
+    if (projectsView) projectsView.style.display = 'none'
+    if (tasksView) tasksView.style.display = 'none'
+    if (dashboardView) dashboardView.style.display = 'none'
+    if (activityHistoryView) activityHistoryView.style.display = ''
+    
+    // Load activity history data
+    loadActivityHistoryData()
+}
+
+async function loadActivityHistoryData() {
+    try {
+        // Get all employees
+        const { data: employees, error: employeesError } = await supabase
+            .from('employees')
+            .select('*')
+            .eq('role', 'employee')
+            .order('name')
+
+        if (employeesError) throw employeesError
+
+        // Get all tasks with employee data (not just completed)
+        const { data: allTasks, error: tasksError } = await supabase
+            .from('tasks')
+            .select(`
+                *,
+                employees!tasks_assignee_id_fkey (
+                    id,
+                    name,
+                    email,
+                    role
+                )
+            `)
+            .not('assignee_id', 'is', null)
+            .order('updated_at', { ascending: false })
+
+        if (tasksError) throw tasksError
+
+        // Process activity data for each employee
+        const activityData = processEmployeeActivityData(employees, allTasks)
+        
+        // Store activity data globally
+        window.activityHistoryData = activityData
+        
+        // Populate employee filter dropdown
+        populateEmployeeActivityFilter(employees)
+        
+        // Render activity history table
+        renderActivityHistoryTable()
+        
+    } catch (error) {
+        console.error('Error loading activity history data:', error)
+        showNotification('Lỗi khi tải dữ liệu lịch sử hoạt động', 'error')
+    }
+}
+
+function processEmployeeActivityData(employees, allTasks) {
+    const activityData = []
+    const now = new Date()
+    const warningThreshold = 15 // 15 days
+    
+    employees.forEach(employee => {
+        // Find all tasks for this employee
+        const employeeTasks = allTasks.filter(task => task.assignee_id === employee.id)
+        
+        // Find the last completed task for this employee
+        const lastCompletedTask = employeeTasks.find(task => task.status === 'completed')
+        
+        // Find the last claimed task (for claim date)
+        const lastClaimedTask = employeeTasks.sort((a, b) => {
+            const dateA = a.claimed_at ? new Date(a.claimed_at) : new Date(0)
+            const dateB = b.claimed_at ? new Date(b.claimed_at) : new Date(0)
+            return dateB - dateA
+        })[0]
+        
+        let lastTaskName = 'Chưa có task nào'
+        let lastClaimDate = null
+        let lastCompletionDate = null
+        let inactivityDays = null
+        let activityStatus = 'inactive'
+        let statusClass = 'badge-activity-inactive'
+        
+        if (lastCompletedTask) {
+            lastTaskName = lastCompletedTask.name
+            lastCompletionDate = lastCompletedTask.completed_at ? new Date(lastCompletedTask.completed_at) : new Date(lastCompletedTask.updated_at)
+            
+            // Calculate inactivity days
+            inactivityDays = Math.floor((now - lastCompletionDate) / (1000 * 60 * 60 * 24))
+            
+            // Determine activity status
+            if (inactivityDays <= 7) {
+                activityStatus = 'active'
+                statusClass = 'badge-activity-active'
+            } else if (inactivityDays <= warningThreshold) {
+                activityStatus = 'warning'
+                statusClass = 'badge-activity-warning'
+            } else {
+                activityStatus = 'inactive'
+                statusClass = 'badge-activity-inactive'
+            }
+        }
+        
+        // Get last claim date
+        if (lastClaimedTask && lastClaimedTask.claimed_at) {
+            lastClaimDate = new Date(lastClaimedTask.claimed_at)
+        }
+        
+        activityData.push({
+            employee: employee,
+            lastTaskName: lastTaskName,
+            lastClaimDate: lastClaimDate,
+            lastCompletionDate: lastCompletionDate,
+            inactivityDays: inactivityDays,
+            activityStatus: activityStatus,
+            statusClass: statusClass
+        })
+    })
+    
+    return activityData
+}
+
+function populateEmployeeActivityFilter(employees) {
+    const filterSelect = document.getElementById('employeeActivityFilter')
+    if (!filterSelect) return
+    
+    // Clear existing options except the first one
+    filterSelect.innerHTML = '<option value="">Tất cả nhân viên</option>'
+    
+    // Add employee options
+    employees.forEach(employee => {
+        const option = document.createElement('option')
+        option.value = employee.id
+        option.textContent = employee.name
+        filterSelect.appendChild(option)
+    })
+}
+
+function renderActivityHistoryTable() {
+    const tbody = document.getElementById('activityHistoryTableBody')
+    if (!tbody || !window.activityHistoryData) return
+    
+    const employeeFilter = document.getElementById('employeeActivityFilter')?.value || ''
+    const statusFilter = document.getElementById('activityStatusFilter')?.value || ''
+    
+    // Filter data based on selected filters
+    let filteredData = window.activityHistoryData
+    
+    if (employeeFilter) {
+        filteredData = filteredData.filter(item => item.employee.id === employeeFilter)
+    }
+    
+    if (statusFilter) {
+        filteredData = filteredData.filter(item => item.activityStatus === statusFilter)
+    }
+    
+    if (filteredData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center">
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <h4>Không có dữ liệu</h4>
+                        <p>Không tìm thấy lịch sử hoạt động phù hợp</p>
+                    </div>
+                </td>
+            </tr>
+        `
+        return
+    }
+    
+    tbody.innerHTML = filteredData.map(item => {
+        const inactivityText = item.inactivityDays !== null 
+            ? `${item.inactivityDays} ngày` 
+            : 'Chưa hoàn thành task nào'
+        
+        const inactivityClass = item.inactivityDays !== null
+            ? item.inactivityDays <= 7 ? 'success' : item.inactivityDays <= 15 ? 'warning' : 'danger'
+            : 'text-muted'
+        
+        const lastCompletionDate = item.lastCompletionDate 
+            ? new Date(item.lastCompletionDate).toLocaleDateString('vi-VN')
+            : 'Chưa có'
+        
+        const rowClass = item.activityStatus === 'warning' ? 'warning-row' : 
+                        item.activityStatus === 'inactive' ? 'inactive-row' : ''
+        
+        return `
+            <tr class="activity-history-row ${rowClass}">
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-2">
+                            <i class="fas fa-user-circle fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <strong>${item.employee.name}</strong>
+                            <br>
+                            <small class="text-muted">${item.employee.email}</small>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge badge-gradient-blue">${item.employee.role}</span>
+                </td>
+                <td>
+                    <span class="text-truncate d-inline-block" style="max-width: 200px;" title="${item.lastTaskName}">
+                        ${item.lastTaskName}
+                    </span>
+                </td>
+                <td>
+                    <span class="text-muted">${item.lastClaimDate ? new Date(item.lastClaimDate).toLocaleDateString('vi-VN') : 'Chưa có'}</span>
+                </td>
+                <td>
+                    <span class="text-muted">${lastCompletionDate}</span>
+                </td>
+                <td>
+                    <span class="inactivity-duration ${inactivityClass}">${inactivityText}</span>
+                </td>
+                <td>
+                    <span class="${item.statusClass}">${
+                        item.activityStatus === 'active' ? 'Đang hoạt động' :
+                        item.activityStatus === 'warning' ? 'Cần chú ý' :
+                        'Không hoạt động'
+                    }</span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewEmployeeDetails('${item.employee.id}')" title="Xem chi tiết">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    ${item.activityStatus === 'warning' || item.activityStatus === 'inactive' ? 
+                        `<button class="btn btn-sm btn-outline-warning ms-1" onclick="sendReminder('${item.employee.id}')" title="Gửi nhắc nhở">
+                            <i class="fas fa-bell"></i>
+                        </button>` : ''
+                    }
+                </td>
+            </tr>
+        `
+    }).join('')
+}
+
+function refreshActivityHistory() {
+    loadActivityHistoryData()
+    showNotification('Đã làm mới dữ liệu lịch sử hoạt động', 'success')
+}
+
+function viewEmployeeDetails(employeeId) {
+    // TODO: Implement detailed employee view
+    showNotification('Tính năng xem chi tiết sẽ được triển khai sau', 'info')
+}
+
+function sendReminder(employeeId) {
+    // TODO: Implement reminder functionality
+    showNotification('Tính năng gửi nhắc nhở sẽ được triển khai sau', 'info')
 }
