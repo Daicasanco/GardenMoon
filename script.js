@@ -3030,7 +3030,10 @@ function renderBetaTasksTable() {
         
         // Calculate time left
         const timeLeft = calculateTimeLeft(task.deadline)
-        const isOverdue = new Date(task.deadline) < new Date()
+        const deadline = new Date(task.deadline)
+        const now = new Date()
+        const isCompleted = task.status === 'completed'
+        const isOverdue = deadline < now && !isCompleted
         
         // Format RV chars (from parent task)
         const rvChars = task.rv_chars ? `<span class="badge badge-gradient-yellow">${task.rv_chars.toLocaleString()}</span>` : '<span class="text-muted">-</span>'
@@ -3135,12 +3138,26 @@ function renderBetaTasksTable() {
             }
         }
         
+        // Countdown deadline
+        let countdown = ''
+        if (isNaN(deadline.getTime())) {
+            countdown = '<span class="text-muted">-</span>'
+        } else if (isCompleted) {
+            countdown = '<span class="badge bg-success">Hoàn thành</span>'
+        } else if (deadline < now) {
+            countdown = '<span class="badge bg-danger">Quá hạn</span>'
+        } else if (timeLeft < 10 * 60 * 60 * 1000) {
+            countdown = `<span class="countdown-timer bg-danger text-white" data-deadline="${task.deadline}" data-taskid="${task.id}"></span>`
+        } else {
+            countdown = `<span class="countdown-timer" data-deadline="${task.deadline}" data-taskid="${task.id}"></span>`
+        }
+
         return `
             <tr class="${isOverdue ? 'table-danger' : ''}">
                 <td>
                     <div class="d-flex flex-column">
                         <small class="text-muted">${formatDateTime(task.deadline)}</small>
-                        <span class="badge ${isOverdue ? 'bg-danger' : 'bg-info'}">${timeLeft}</span>
+                        ${countdown}
                     </div>
                 </td>
                 <td>
