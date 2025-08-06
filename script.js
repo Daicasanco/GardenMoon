@@ -12,7 +12,7 @@
             disableSelect: true,      // Vô hiệu hóa select text
             disableCopy: true,        // Vô hiệu hóa copy
             disableCut: true,         // Vô hiệu hóa cut
-            disablePaste: true,       // Vô hiệu hóa paste
+            disablePaste: false,       // Vô hiệu hóa paste
             clearLog: true,           // Xóa console log
             interval: 1000,           // Kiểm tra mỗi 1 giây
             detectors: [0,1,2,3,4,5,6,7], // Tất cả các detector
