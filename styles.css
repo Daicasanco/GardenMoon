@@ -2193,3 +2193,153 @@ body {
         font-size: 0.8em;
     }
 } 
+
+/* Timeline Styles */
+.timeline-item {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.timeline-item:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    border-left-color: var(--primary-color) !important;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+/* Employee Details Modal */
+.employee-details-modal .modal-lg {
+    max-width: 900px;
+}
+
+.employee-details-modal .card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.employee-details-modal .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.employee-details-modal .card-body {
+    padding: 1.5rem;
+}
+
+.employee-details-modal .table-sm td {
+    padding: 0.5rem;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.employee-details-modal .table-sm tr:last-child td {
+    border-bottom: none;
+}
+
+/* Stats Cards */
+.stats-card {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: scale(1.05);
+}
+
+.stats-card .card-body {
+    padding: 1.5rem 1rem;
+}
+
+.stats-card h4 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.stats-card small {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* Activity Timeline Container */
+.activity-timeline-container {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    padding: 1.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) #f0f0f0;
+}
+
+.activity-timeline-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.activity-timeline-container::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 3px;
+}
+
+.activity-timeline-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+.activity-timeline-container::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* Load More Button */
+.load-more-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.load-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .employee-details-modal .modal-lg {
+        max-width: 95%;
+        margin: 1rem;
+    }
+    
+    .employee-details-modal .row > div {
+        margin-bottom: 1rem;
+    }
+    
+    .stats-card h4 {
+        font-size: 1.5rem;
+    }
+    
+    .activity-timeline-container {
+        max-height: 300px;
+        padding: 1rem;
+    }
+    
+    .timeline-item {
+        font-size: 0.9em;
+    }
+}

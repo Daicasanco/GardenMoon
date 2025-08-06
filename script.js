@@ -4342,8 +4342,207 @@ function refreshActivityHistory() {
 }
 
 function viewEmployeeDetails(employeeId) {
-    // TODO: Implement detailed employee view
-    showNotification('Tính năng xem chi tiết sẽ được triển khai sau', 'info')
+    // Tìm thông tin nhân viên từ dữ liệu hiện tại
+    const employee = window.activityHistoryData?.find(item => item.employee.id === employeeId)?.employee;
+    if (!employee) {
+        showNotification('Không tìm thấy thông tin nhân viên', 'error');
+        return;
+    }
+    
+    // Tạo modal content với thông tin cơ bản
+    const modalContent = `
+        <div class="modal fade" id="employeeDetailsModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-user-circle me-2"></i>
+                            Chi tiết hoạt động: ${employee.name}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Employee Info -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-info-circle me-2"></i>Thông tin cơ bản</h6>
+                                <table class="table table-sm">
+                                    <tr><td><strong>Email:</strong></td><td>${employee.email}</td></tr>
+                                    <tr><td><strong>Vai trò:</strong></td><td>${employee.role}</td></tr>
+                                    <tr><td><strong>Ngày tham gia:</strong></td><td>${new Date(employee.created_at).toLocaleDateString('vi-VN')}</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-chart-line me-2"></i>Thống kê tổng quan</h6>
+                                <div id="employeeStats" class="text-center">
+                                    <div class="spinner-border spinner-border-sm" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity Timeline -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h6><i class="fas fa-history me-2"></i>Lịch sử hoạt động gần đây</h6>
+                                <div id="activityTimeline" class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                                    <div class="text-center">
+                                        <div class="spinner-border spinner-border-sm" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <button class="btn btn-sm btn-outline-primary" id="loadMoreBtn" style="display: none;">
+                                        <i class="fas fa-plus"></i> Xem thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-warning" onclick="sendReminder('${employeeId}')">
+                            <i class="fas fa-bell"></i> Gửi nhắc nhở
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Thêm modal vào DOM
+    document.body.insertAdjacentHTML('beforeend', modalContent);
+    
+    // Hiển thị modal
+    const modal = new bootstrap.Modal(document.getElementById('employeeDetailsModal'));
+    modal.show();
+    
+    // Load dữ liệu sau khi modal hiển thị
+    loadEmployeeStats(employeeId);
+    loadEmployeeTimeline(employeeId);
+    
+    // Cleanup khi modal đóng
+    document.getElementById('employeeDetailsModal').addEventListener('hidden.bs.modal', function() {
+        this.remove();
+    });
+}
+
+async function loadEmployeeStats(employeeId) {
+    try {
+        // Sử dụng view có sẵn thay vì query phức tạp
+        const { data, error } = await supabase
+            .from('employee_activity_stats')
+            .select('*')
+            .eq('employee_id', employeeId)
+            .single();
+            
+        if (error) throw error;
+        
+        const statsHtml = `
+            <div class="row">
+                <div class="col-6">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h4>${data.total_tasks || 0}</h4>
+                            <small>Tổng task</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h4>${data.completed_tasks || 0}</h4>
+                            <small>Đã hoàn thành</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-12">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h4>${data.total_chars_completed?.toLocaleString() || 0}</h4>
+                            <small>Tổng ký tự</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('employeeStats').innerHTML = statsHtml;
+        
+    } catch (error) {
+        console.error('Error loading employee stats:', error);
+        document.getElementById('employeeStats').innerHTML = '<p class="text-muted">Không thể tải thống kê</p>';
+    }
+}
+
+async function loadEmployeeTimeline(employeeId, page = 1) {
+    try {
+        const limit = 10;
+        const offset = (page - 1) * limit;
+        
+        // Sử dụng view có sẵn với pagination
+        const { data, error } = await supabase
+            .from('employee_activity_history')
+            .select('*')
+            .eq('employee_id', employeeId)
+            .order('completed_at', { ascending: false })
+            .range(offset, offset + limit - 1);
+            
+        if (error) throw error;
+        
+        if (page === 1) {
+            // Lần đầu load
+            const timelineHtml = data.length > 0 ? data.map(task => `
+                <div class="timeline-item border-start border-primary ps-3 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <strong>${task.task_name}</strong>
+                        <small class="text-muted">${task.completed_at ? new Date(task.completed_at).toLocaleDateString('vi-VN') : 'Đang thực hiện'}</small>
+                    </div>
+                    <div class="text-muted small">
+                        <span class="badge bg-${task.task_status === 'completed' ? 'success' : task.task_status === 'in_progress' ? 'warning' : 'secondary'}">${task.task_status}</span>
+                        ${task.project_name ? `<span class="ms-2">Dự án: ${task.project_name}</span>` : ''}
+                    </div>
+                    ${task.hours_to_complete ? `<div class="text-info small">Thời gian: ${task.hours_to_complete.toFixed(1)} giờ</div>` : ''}
+                </div>
+            `).join('') : '<p class="text-muted text-center">Chưa có hoạt động nào</p>';
+            
+            document.getElementById('activityTimeline').innerHTML = timelineHtml;
+        } else {
+            // Load more
+            const moreHtml = data.map(task => `
+                <div class="timeline-item border-start border-primary ps-3 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <strong>${task.task_name}</strong>
+                        <small class="text-muted">${task.completed_at ? new Date(task.completed_at).toLocaleDateString('vi-VN') : 'Đang thực hiện'}</small>
+                    </div>
+                    <div class="text-muted small">
+                        <span class="badge bg-${task.task_status === 'completed' ? 'success' : task.task_status === 'in_progress' ? 'warning' : 'secondary'}">${task.task_status}</span>
+                        ${task.project_name ? `<span class="ms-2">Dự án: ${task.project_name}</span>` : ''}
+                    </div>
+                    ${task.hours_to_complete ? `<div class="text-info small">Thời gian: ${task.hours_to_complete.toFixed(1)} giờ</div>` : ''}
+                </div>
+            `).join('');
+            
+            document.getElementById('activityTimeline').insertAdjacentHTML('beforeend', moreHtml);
+        }
+        
+        // Hiển thị/ẩn nút "Xem thêm"
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (data.length === limit) {
+            loadMoreBtn.style.display = 'inline-block';
+            loadMoreBtn.onclick = () => loadEmployeeTimeline(employeeId, page + 1);
+        } else {
+            loadMoreBtn.style.display = 'none';
+        }
+        
+    } catch (error) {
+        console.error('Error loading employee timeline:', error);
+        document.getElementById('activityTimeline').innerHTML = '<p class="text-muted text-center">Không thể tải lịch sử hoạt động</p>';
+    }
 }
 
 function sendReminder(employeeId) {
