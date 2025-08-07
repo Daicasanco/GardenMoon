@@ -1597,58 +1597,55 @@ function renderProjectsTable() {
         return
     }
     
-    // Use enhanced rendering with scroll support
-    renderTableWithScrollSupport('projectsTable', filteredProjects, () => {
-        filteredProjects.forEach(project => {
-            const row = document.createElement('tr')
-            
-            // Add row class based on status
-            if (project.status === 'completed') {
-                row.classList.add('table-row-completed')
-            } else if (project.status === 'paused') {
-                row.classList.add('table-row-paused')
-            }
-            
-            // Get task count for this project - fix the count display
-            const taskCount = tasks.filter(t => t.project_id === project.id).length
-            console.log(`Project ${project.id} (${project.name}): ${taskCount} tasks found`)
-            
-            row.innerHTML = `
-                <td>${project.id}</td>
-                <td>
-                    <a href="#" onclick="selectProject(${project.id})" class="text-decoration-none">
-                        <strong>${project.name}</strong>
-                    </a>
-                </td>
-                <td>${project.description || '-'}</td>
-                <td>${getProjectStatusBadge(project.status)}</td>
-                <td>${project.manager?.name || 'N/A'}</td>
-                <td>${formatDateTime(project.created_at)}</td>
-                <td><span class="badge bg-info">${taskCount} công việc</span></td>
-                <td>
-                    <div class="btn-group btn-group-sm">
-                        ${hasManagerOrBossPermissions(currentUser) ? 
-                            `<button class="btn btn-outline-info btn-sm" onclick="showProjectReport(${project.id})" title="Báo cáo dự án">
-                                <i class="fas fa-chart-bar"></i>
-                            </button>
-                            <button class="btn btn-outline-success btn-sm" onclick="downloadBetaFiles(${project.id})" title="Tải file Beta">
-                                <i class="fas fa-download"></i>
-                            </button>` : ''
-                        }
-                        ${canOperateOnProject(project) ? 
-                            `<button class="btn btn-outline-warning btn-sm" onclick="editProject(${project.id})">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-outline-danger btn-sm" onclick="deleteProject(${project.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>` : ''
-                        }
-                    </div>
-                </td>
-            `
-            
-            tbody.appendChild(row)
-        })
+    filteredProjects.forEach(project => {
+        const row = document.createElement('tr')
+        
+        // Add row class based on status
+        if (project.status === 'completed') {
+            row.classList.add('table-row-completed')
+        } else if (project.status === 'paused') {
+            row.classList.add('table-row-paused')
+        }
+        
+        // Get task count for this project - fix the count display
+        const taskCount = tasks.filter(t => t.project_id === project.id).length
+        console.log(`Project ${project.id} (${project.name}): ${taskCount} tasks found`)
+        
+        row.innerHTML = `
+            <td>${project.id}</td>
+            <td>
+                <a href="#" onclick="selectProject(${project.id})" class="text-decoration-none">
+                    <strong>${project.name}</strong>
+                </a>
+            </td>
+            <td>${project.description || '-'}</td>
+            <td>${getProjectStatusBadge(project.status)}</td>
+            <td>${project.manager?.name || 'N/A'}</td>
+            <td>${formatDateTime(project.created_at)}</td>
+            <td><span class="badge bg-info">${taskCount} công việc</span></td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    ${hasManagerOrBossPermissions(currentUser) ? 
+                        `<button class="btn btn-outline-info btn-sm" onclick="showProjectReport(${project.id})" title="Báo cáo dự án">
+                            <i class="fas fa-chart-bar"></i>
+                        </button>
+                        <button class="btn btn-outline-success btn-sm" onclick="downloadBetaFiles(${project.id})" title="Tải file Beta">
+                            <i class="fas fa-download"></i>
+                        </button>` : ''
+                    }
+                    ${canOperateOnProject(project) ? 
+                        `<button class="btn btn-outline-warning btn-sm" onclick="editProject(${project.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteProject(${project.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>` : ''
+                    }
+                </div>
+            </td>
+        `
+        
+        tbody.appendChild(row)
     })
 }
 
@@ -1699,10 +1696,7 @@ function renderTasksTable() {
         tbody.innerHTML = `<tr><td colspan="12" class="text-center"><div class="empty-state"><i class="fas fa-tasks"></i><h4>Không có công việc nào</h4><p>Hãy Thêm Deadline đầu tiên cho dự án này</p></div></td></tr>`
         return
     }
-    
-    // Use enhanced rendering with scroll support
-    renderTableWithScrollSupport('tasksTable', projectTasks, () => {
-        projectTasks.forEach(task => {
+    projectTasks.forEach(task => {
         const row = document.createElement('tr')
         // Xác định trạng thái deadline
         let deadline = new Date(task.deadline);
@@ -1793,7 +1787,6 @@ function renderTasksTable() {
             <td>${notesDisplay}</td>
             <td><div class="btn-group-actions">${actionButtons}</div></td>`
         tbody.appendChild(row)
-        })
     })
     updateAllCountdowns();
 }
@@ -4562,307 +4555,3 @@ function sendReminder(employeeId) {
     // TODO: Implement reminder functionality
     showNotification('Tính năng gửi nhắc nhở sẽ được triển khai sau', 'info')
 }
-
-// --- HORIZONTAL SCROLLBAR SUPPORT FUNCTIONS ---
-
-// Initialize horizontal scrollbar functionality
-function initializeHorizontalScrollbars() {
-    // Add scroll to top button to body if not exists
-    if (!document.querySelector('.scroll-to-top')) {
-        const scrollToTopBtn = document.createElement('button');
-        scrollToTopBtn.className = 'scroll-to-top';
-        scrollToTopBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-        scrollToTopBtn.title = 'Cuộn lên đầu';
-        scrollToTopBtn.onclick = scrollToTop;
-        document.body.appendChild(scrollToTopBtn);
-    }
-
-    // Initialize scroll listeners for all table containers
-    const tableContainers = document.querySelectorAll('.table-responsive');
-    tableContainers.forEach(container => {
-        initializeTableScroll(container);
-    });
-
-    // Add scroll indicator for wide tables
-    addScrollIndicators();
-}
-
-// Initialize scroll functionality for a specific table container
-function initializeTableScroll(container) {
-    if (!container) return;
-
-    // Add loading state class
-    container.classList.add('loading');
-    
-    // Remove loading state after a short delay
-    setTimeout(() => {
-        container.classList.remove('loading');
-    }, 500);
-
-    // Add scroll event listener
-    container.addEventListener('scroll', function() {
-        updateScrollToTopButton();
-        updateScrollIndicators(this);
-    });
-
-    // Add wheel event for horizontal scrolling
-    container.addEventListener('wheel', function(e) {
-        if (e.shiftKey || e.deltaY !== 0) {
-            e.preventDefault();
-            this.scrollLeft += e.deltaY;
-        }
-    }, { passive: false });
-
-    // Add touch support for mobile
-    let isScrolling = false;
-    let startX = 0;
-    let scrollLeft = 0;
-
-    container.addEventListener('touchstart', function(e) {
-        isScrolling = true;
-        startX = e.touches[0].pageX - container.offsetLeft;
-        scrollLeft = container.scrollLeft;
-    });
-
-    container.addEventListener('touchmove', function(e) {
-        if (!isScrolling) return;
-        e.preventDefault();
-        const x = e.touches[0].pageX - container.offsetLeft;
-        const walk = (x - startX) * 2;
-        container.scrollLeft = scrollLeft - walk;
-    });
-
-    container.addEventListener('touchend', function() {
-        isScrolling = false;
-    });
-}
-
-// Update scroll to top button visibility
-function updateScrollToTopButton() {
-    const scrollToTopBtn = document.querySelector('.scroll-to-top');
-    if (!scrollToTopBtn) return;
-
-    const activeContainer = getActiveTableContainer();
-    if (activeContainer && activeContainer.scrollLeft > 100) {
-        scrollToTopBtn.classList.add('show');
-    } else {
-        scrollToTopBtn.classList.remove('show');
-    }
-}
-
-// Get the currently active table container
-function getActiveTableContainer() {
-    const containers = document.querySelectorAll('.table-responsive');
-    for (let container of containers) {
-        if (container.scrollLeft > 0) {
-            return container;
-        }
-    }
-    return null;
-}
-
-// Scroll to top function
-function scrollToTop() {
-    const activeContainer = getActiveTableContainer();
-    if (activeContainer) {
-        activeContainer.scrollTo({
-            left: 0,
-            behavior: 'smooth'
-        });
-    }
-}
-
-// Add scroll indicators for wide tables
-function addScrollIndicators() {
-    const containers = document.querySelectorAll('.table-responsive');
-    containers.forEach(container => {
-        // Add left scroll indicator
-        const leftIndicator = document.createElement('div');
-        leftIndicator.className = 'scroll-indicator scroll-indicator-left';
-        leftIndicator.innerHTML = '<i class="fas fa-chevron-left"></i>';
-        container.appendChild(leftIndicator);
-
-        // Add right scroll indicator
-        const rightIndicator = document.createElement('div');
-        rightIndicator.className = 'scroll-indicator scroll-indicator-right';
-        rightIndicator.innerHTML = '<i class="fas fa-chevron-right"></i>';
-        container.appendChild(rightIndicator);
-
-        // Update indicators on scroll
-        updateScrollIndicators(container);
-    });
-}
-
-// Update scroll indicators visibility
-function updateScrollIndicators(container) {
-    if (!container) return;
-
-    const leftIndicator = container.querySelector('.scroll-indicator-left');
-    const rightIndicator = container.querySelector('.scroll-indicator-right');
-
-    if (leftIndicator) {
-        leftIndicator.style.display = container.scrollLeft > 0 ? 'flex' : 'none';
-    }
-
-    if (rightIndicator) {
-        const maxScroll = container.scrollWidth - container.clientWidth;
-        rightIndicator.style.display = container.scrollLeft < maxScroll ? 'flex' : 'none';
-    }
-}
-
-// Enhanced table rendering with scroll support
-function renderTableWithScrollSupport(tableId, data, renderFunction) {
-    const tableContainer = document.querySelector(`#${tableId}`).closest('.table-responsive');
-    
-    // Add loading state
-    if (tableContainer) {
-        tableContainer.classList.add('loading');
-    }
-
-    // Render the table
-    renderFunction();
-
-    // Initialize scroll support after rendering
-    setTimeout(() => {
-        if (tableContainer) {
-            tableContainer.classList.remove('loading');
-            initializeTableScroll(tableContainer);
-        }
-    }, 100);
-}
-
-// Auto-scroll to specific column in table
-function scrollToColumn(tableId, columnIndex) {
-    const table = document.getElementById(tableId);
-    if (!table) return;
-
-    const container = table.closest('.table-responsive');
-    if (!container) return;
-
-    const headerCell = table.querySelector(`thead th:nth-child(${columnIndex + 1})`);
-    if (headerCell) {
-        const containerRect = container.getBoundingClientRect();
-        const cellRect = headerCell.getBoundingClientRect();
-        const scrollLeft = container.scrollLeft + (cellRect.left - containerRect.left);
-        
-        container.scrollTo({
-            left: scrollLeft,
-            behavior: 'smooth'
-        });
-    }
-}
-
-// Highlight specific row and scroll to it
-function highlightAndScrollToRow(tableId, rowIndex) {
-    const table = document.getElementById(tableId);
-    if (!table) return;
-
-    const container = table.closest('.table-responsive');
-    if (!container) return;
-
-    const row = table.querySelector(`tbody tr:nth-child(${rowIndex + 1})`);
-    if (row) {
-        // Remove previous highlights
-        table.querySelectorAll('tbody tr').forEach(r => r.classList.remove('highlighted-row'));
-        
-        // Add highlight to current row
-        row.classList.add('highlighted-row');
-        
-        // Scroll to row
-        const containerRect = container.getBoundingClientRect();
-        const rowRect = row.getBoundingClientRect();
-        const scrollLeft = container.scrollLeft + (rowRect.left - containerRect.left);
-        
-        container.scrollTo({
-            left: scrollLeft,
-            behavior: 'smooth'
-        });
-
-        // Remove highlight after 3 seconds
-        setTimeout(() => {
-            row.classList.remove('highlighted-row');
-        }, 3000);
-    }
-}
-
-// Keyboard navigation for tables
-function setupTableKeyboardNavigation(tableId) {
-    const table = document.getElementById(tableId);
-    if (!table) return;
-
-    table.addEventListener('keydown', function(e) {
-        const container = table.closest('.table-responsive');
-        if (!container) return;
-
-        const scrollAmount = 200;
-        
-        switch(e.key) {
-            case 'ArrowLeft':
-                e.preventDefault();
-                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                break;
-            case 'ArrowRight':
-                e.preventDefault();
-                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                break;
-            case 'Home':
-                e.preventDefault();
-                container.scrollTo({ left: 0, behavior: 'smooth' });
-                break;
-            case 'End':
-                e.preventDefault();
-                container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
-                break;
-        }
-    });
-}
-
-// Initialize all table scroll functionality
-function initializeAllTableScrolls() {
-    // Initialize existing tables
-    initializeHorizontalScrollbars();
-    
-    // Setup keyboard navigation for all tables
-    const tableIds = ['projectsTable', 'tasksTable', 'betaTasksTable', 'activityHistoryTable'];
-    tableIds.forEach(id => {
-        setupTableKeyboardNavigation(id);
-    });
-}
-
-// Enhanced table filter with scroll support
-function filterTableWithScroll(tableId, filterFunction) {
-    const table = document.getElementById(tableId);
-    if (!table) return;
-
-    const container = table.closest('.table-responsive');
-    if (container) {
-        container.classList.add('loading');
-    }
-
-    // Apply filter
-    filterFunction();
-
-    // Reset scroll position and remove loading state
-    setTimeout(() => {
-        if (container) {
-            container.scrollLeft = 0;
-            container.classList.remove('loading');
-        }
-    }, 300);
-}
-
-// Call initialization when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize after a short delay to ensure all tables are rendered
-    setTimeout(initializeAllTableScrolls, 1000);
-});
-
-// Re-initialize scrollbars when views change
-function reinitializeScrollbars() {
-    setTimeout(initializeAllTableScrolls, 500);
-}
-
-// Export functions for global access
-window.scrollToColumn = scrollToColumn;
-window.highlightAndScrollToRow = highlightAndScrollToRow;
-window.reinitializeScrollbars = reinitializeScrollbars;

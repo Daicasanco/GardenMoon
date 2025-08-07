@@ -2937,161 +2937,50 @@ body {
     }
 }
 
-/* --- HORIZONTAL SCROLLBAR STYLES FOR TABLES --- */
+/* --- HORIZONTAL SCROLLBAR FOR TABLES --- */
 
-/* Enhanced horizontal scrollbar for project tables */
+/* Enable horizontal scrolling for table containers */
 .table-responsive {
     overflow-x: auto;
     overflow-y: hidden;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Custom scrollbar styling for table containers */
+/* Custom scrollbar styling */
 .table-responsive::-webkit-scrollbar {
     height: 12px;
-    background-color: #f8f9fa;
-    border-radius: 6px;
+    background-color: #f1f1f1;
 }
 
 .table-responsive::-webkit-scrollbar-track {
-    background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #f1f1f1;
     border-radius: 6px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-    background: linear-gradient(90deg, #36d1c4 0%, #5b86e5 100%);
+    background: #888;
     border-radius: 6px;
-    border: 2px solid #f8f9fa;
-    transition: all 0.3s ease;
 }
 
 .table-responsive::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(90deg, #5b86e5 0%, #36d1c4 100%);
-    box-shadow: 0 2px 8px rgba(91, 134, 229, 0.4);
+    background: #555;
 }
 
-.table-responsive::-webkit-scrollbar-corner {
-    background: #f8f9fa;
+/* Firefox scrollbar */
+.table-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
 }
 
-/* Specific styling for project table */
-#projectsTable {
-    min-width: 1200px;
-    white-space: nowrap;
-}
-
-#projectsTable th,
-#projectsTable td {
-    padding: 1rem 0.75rem;
-    vertical-align: middle;
-    border-bottom: 1px solid #dee2e6;
-}
-
-#projectsTable th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: linear-gradient(90deg, #232526 0%, #414345 100%);
-    color: #f8f9fa;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    border: none;
-    white-space: nowrap;
-}
-
-/* Specific styling for tasks table */
+/* Ensure tables have minimum width to trigger scroll */
+#projectsTable,
 #tasksTable,
-#betaTasksTable {
-    min-width: 1400px;
-    white-space: nowrap;
-}
-
-#tasksTable th,
-#tasksTable td,
-#betaTasksTable th,
-#betaTasksTable td {
-    padding: 1rem 0.75rem;
-    vertical-align: middle;
-    border-bottom: 1px solid #dee2e6;
-}
-
-#tasksTable th,
-#betaTasksTable th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: linear-gradient(90deg, #232526 0%, #414345 100%);
-    color: #f8f9fa;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    border: none;
-    white-space: nowrap;
-}
-
-/* Specific styling for activity history table */
+#betaTasksTable,
 #activityHistoryTable {
     min-width: 1200px;
-    white-space: nowrap;
 }
 
-#activityHistoryTable th,
-#activityHistoryTable td {
-    padding: 1rem 0.75rem;
-    vertical-align: middle;
-    border-bottom: 1px solid #dee2e6;
-}
-
-#activityHistoryTable th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: linear-gradient(90deg, #232526 0%, #414345 100%);
-    color: #f8f9fa;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    border: none;
-    white-space: nowrap;
-}
-
-/* Enhanced table row hover effects */
-.table-responsive .table tbody tr:hover {
-    background: linear-gradient(90deg, rgba(54, 209, 196, 0.1) 0%, rgba(91, 134, 229, 0.1) 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-/* Scroll indicator for wide tables */
-.table-responsive::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 20px;
-    background: linear-gradient(90deg, transparent 0%, rgba(248, 249, 250, 0.8) 100%);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.table-responsive:hover::after {
-    opacity: 1;
-}
-
-/* Responsive adjustments for mobile */
+/* Mobile responsive */
 @media (max-width: 768px) {
-    .table-responsive {
-        margin: 0 -15px;
-        padding: 0 15px;
-    }
-    
-    .table-responsive::-webkit-scrollbar {
-        height: 8px;
-    }
-    
     #projectsTable,
     #tasksTable,
     #betaTasksTable,
@@ -3099,394 +2988,7 @@ body {
         min-width: 800px;
     }
     
-    #projectsTable th,
-    #projectsTable td,
-    #tasksTable th,
-    #tasksTable td,
-    #betaTasksTable th,
-    #betaTasksTable td,
-    #activityHistoryTable th,
-    #activityHistoryTable td {
-        padding: 0.75rem 0.5rem;
-        font-size: 0.875rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .table-responsive {
-        margin: 0 -10px;
-        padding: 0 10px;
-    }
-    
-    #projectsTable,
-    #tasksTable,
-    #betaTasksTable,
-    #activityHistoryTable {
-        min-width: 600px;
-    }
-    
-    #projectsTable th,
-    #projectsTable td,
-    #tasksTable th,
-    #tasksTable td,
-    #betaTasksTable th,
-    #betaTasksTable td,
-    #activityHistoryTable th,
-    #activityHistoryTable td {
-        padding: 0.5rem 0.25rem;
-        font-size: 0.8rem;
-    }
-}
-
-/* Smooth scrolling animation */
-.table-responsive {
-    scroll-behavior: smooth;
-}
-
-/* Custom scrollbar for Firefox */
-.table-responsive {
-    scrollbar-width: thin;
-    scrollbar-color: #5b86e5 #f8f9fa;
-}
-
-/* Loading state for tables */
-.table-responsive.loading {
-    position: relative;
-    min-height: 200px;
-}
-
-.table-responsive.loading::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-}
-
-.table-responsive.loading::after {
-    content: 'Đang tải...';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 101;
-    font-weight: 600;
-    color: #6c757d;
-}
-
-/* Empty state styling */
-.table-responsive .empty-state {
-    padding: 3rem 1rem;
-    text-align: center;
-    color: #6c757d;
-    min-height: 200px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.table-responsive .empty-state i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    opacity: 0.5;
-}
-
-.table-responsive .empty-state h4 {
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-}
-
-.table-responsive .empty-state p {
-    margin-bottom: 0;
-    opacity: 0.8;
-}
-
-/* Enhanced table header styling */
-.table-responsive .table-dark th {
-    background: linear-gradient(90deg, #232526 0%, #414345 100%);
-    color: #f8f9fa !important;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    border: none;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    white-space: nowrap;
-}
-
-/* Table cell content wrapping for better readability */
-.table-responsive .table td {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.table-responsive .table td.expandable {
-    white-space: normal;
-    word-wrap: break-word;
-}
-
-/* Action buttons container */
-.table-responsive .btn-group {
-    white-space: nowrap;
-    flex-wrap: nowrap;
-}
-
-.table-responsive .btn-group .btn {
-    margin: 0 1px;
-    white-space: nowrap;
-}
-
-/* Badge styling in tables */
-.table-responsive .badge {
-    white-space: nowrap;
-    max-width: 100px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Link styling in tables */
-.table-responsive .table a {
-    color: #0d6efd;
-    text-decoration: none;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
-    max-width: 150px;
-}
-
-.table-responsive .table a:hover {
-    color: #0a58ca;
-    text-decoration: underline;
-}
-
-/* Priority and status indicators */
-.table-responsive .priority-indicator,
-.table-responsive .status-indicator {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 8px;
-}
-
-.table-responsive .priority-urgent {
-    background-color: #dc3545;
-    box-shadow: 0 0 8px rgba(220, 53, 69, 0.6);
-}
-
-.table-responsive .priority-high {
-    background-color: #fd7e14;
-}
-
-.table-responsive .priority-medium {
-    background-color: #ffc107;
-}
-
-.table-responsive .priority-low {
-    background-color: #28a745;
-}
-
-/* Animation for table loading */
-@keyframes tableFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.table-responsive .table {
-    animation: tableFadeIn 0.5s ease-out;
-}
-
-/* Scroll to top button for wide tables */
-.scroll-to-top {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(90deg, #36d1c4 0%, #5b86e5 100%);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-.scroll-to-top:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-}
-
-.scroll-to-top.show {
-    display: flex;
-}
-
-/* Print styles for tables */
-@media print {
-    .table-responsive {
-        overflow: visible;
-        box-shadow: none;
-    }
-    
     .table-responsive::-webkit-scrollbar {
-        display: none;
-    }
-    
-    .scroll-to-top {
-        display: none !important;
-    }
-}
-
-/* Scroll indicators for table containers */
-.scroll-indicator {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(90deg, #36d1c4 0%, #5b86e5 100%);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    z-index: 20;
-    opacity: 0.8;
-}
-
-.scroll-indicator:hover {
-    opacity: 1;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-}
-
-.scroll-indicator-left {
-    left: 10px;
-}
-
-.scroll-indicator-right {
-    right: 10px;
-}
-
-.scroll-indicator i {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-/* Highlighted row styling */
-.table-responsive .table tbody tr.highlighted-row {
-    background: linear-gradient(90deg, rgba(54, 209, 196, 0.2) 0%, rgba(91, 134, 229, 0.2) 100%) !important;
-    box-shadow: 0 0 20px rgba(54, 209, 196, 0.3);
-    animation: highlightPulse 2s ease-in-out;
-}
-
-@keyframes highlightPulse {
-    0%, 100% {
-        box-shadow: 0 0 20px rgba(54, 209, 196, 0.3);
-    }
-    50% {
-        box-shadow: 0 0 30px rgba(54, 209, 196, 0.5);
-    }
-}
-
-/* Enhanced table container positioning */
-.table-responsive {
-    position: relative;
-    overflow: hidden;
-}
-
-/* Mobile responsive adjustments for scroll indicators */
-@media (max-width: 768px) {
-    .scroll-indicator {
-        width: 35px;
-        height: 35px;
-    }
-    
-    .scroll-indicator i {
-        font-size: 12px;
-    }
-    
-    .scroll-indicator-left {
-        left: 5px;
-    }
-    
-    .scroll-indicator-right {
-        right: 5px;
-    }
-}
-
-@media (max-width: 576px) {
-    .scroll-indicator {
-        width: 30px;
-        height: 30px;
-    }
-    
-    .scroll-indicator i {
-        font-size: 10px;
-    }
-}
-
-/* Focus styles for keyboard navigation */
-.table-responsive:focus-within {
-    outline: 2px solid #36d1c4;
-    outline-offset: 2px;
-}
-
-/* Accessibility improvements */
-.scroll-indicator:focus {
-    outline: 2px solid #fff;
-    outline-offset: 2px;
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    .scroll-indicator {
-        background: #000;
-        color: #fff;
-        border: 2px solid #fff;
-    }
-    
-    .table-responsive .table tbody tr.highlighted-row {
-        background: #ffff00 !important;
-        color: #000 !important;
-    }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-    .table-responsive {
-        scroll-behavior: auto;
-    }
-    
-    .scroll-indicator {
-        transition: none;
-    }
-    
-    .table-responsive .table tbody tr.highlighted-row {
-        animation: none;
+        height: 8px;
     }
 }
