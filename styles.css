@@ -2521,6 +2521,8 @@ body {
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    position: relative;
+    z-index: 1;
 }
 
 .activity-history-card .card-header {
@@ -2528,6 +2530,8 @@ body {
     color: white;
     border-bottom: none;
     padding: 1.5rem;
+    position: relative;
+    z-index: 2;
 }
 
 .activity-history-card .card-header h5 {
@@ -2712,12 +2716,16 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border: none;
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    position: relative;
+    z-index: 1;
 }
 
 .activity-history-table thead {
     background: linear-gradient(135deg, #2c3e50, #34495e);
     color: white;
     border: none;
+    position: relative;
+    z-index: 2;
 }
 
 .activity-history-table thead th {
@@ -2728,6 +2736,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     position: relative;
+    z-index: 3;
 }
 
 .activity-history-table thead th:not(:last-child)::after {
@@ -3493,4 +3502,114 @@ body {
         padding: 0.5rem;
         font-size: 0.8rem;
     }
+}
+
+/* Activity History View Fixes */
+#activityHistoryView {
+    position: relative;
+    z-index: 1;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+/* Ensure activity history view doesn't overlap other elements */
+#activityHistoryView .card {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0;
+}
+
+#activityHistoryView .table-responsive {
+    position: relative;
+    z-index: 1;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for sticky positioning issues */
+.activity-history-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+}
+
+/* Ensure proper stacking context */
+.activity-history-card {
+    position: relative;
+    z-index: 1;
+}
+
+.activity-history-card .card-body {
+    position: relative;
+    z-index: 1;
+}
+
+/* Fix for mobile display issues */
+@media (max-width: 768px) {
+    #activityHistoryView {
+        margin: 1rem 0;
+        padding: 0;
+        position: relative;
+        z-index: 50;
+    }
+    
+    #activityHistoryView .card {
+        border-radius: 8px;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .activity-history-table {
+        min-width: 800px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .activity-history-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 15;
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+    }
+    
+    /* Ensure proper scrolling on mobile */
+    .activity-history-table .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+    }
+    
+    /* Fix for button positioning */
+    #activityHistoryView .btn {
+        position: relative;
+        z-index: 10;
+    }
+}
+
+/* Fix for z-index conflicts */
+.modal {
+    z-index: 1050;
+}
+
+.dropdown-menu {
+    z-index: 1000;
+}
+
+.toast-container {
+    z-index: 1060;
+}
+
+/* Ensure activity history doesn't interfere with other elements */
+.leaderboard-sidebar,
+.notifications-sidebar {
+    z-index: 100;
+}
+
+#activityHistoryView {
+    z-index: 50;
 }

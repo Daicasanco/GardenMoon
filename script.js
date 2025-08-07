@@ -4222,10 +4222,20 @@ function showActivityHistoryView() {
     if (projectsView) projectsView.style.display = 'none'
     if (tasksView) tasksView.style.display = 'none'
     if (dashboardView) dashboardView.style.display = 'none'
-    if (activityHistoryView) activityHistoryView.style.display = ''
+    if (activityHistoryView) {
+        activityHistoryView.style.display = 'block'
+        // Ensure proper positioning and z-index
+        activityHistoryView.style.position = 'relative'
+        activityHistoryView.style.zIndex = '50'
+    }
     
     // Load activity history data
     loadActivityHistoryData()
+    
+    // Optimize table for mobile after loading
+    setTimeout(() => {
+        optimizeTableForMobile('activityHistoryTable')
+    }, 500)
 }
 
 async function loadActivityHistoryData() {
