@@ -16,311 +16,6 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Mobile Responsive Improvements */
-@media (max-width: 768px) {
-    .container-fluid {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-    
-    /* Improved table scrolling */
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
-        scrollbar-color: #888 #f1f1f1;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    .table-responsive::-webkit-scrollbar {
-        height: 6px;
-    }
-    
-    .table-responsive::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 3px;
-    }
-    
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 3px;
-    }
-    
-    .table-responsive::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-    
-    /* Better table sizing for mobile */
-    .table {
-        min-width: 700px;
-        font-size: 0.875rem;
-        margin-bottom: 0;
-    }
-    
-    .table th,
-    .table td {
-        white-space: nowrap;
-        padding: 0.75rem 0.5rem;
-        vertical-align: middle;
-    }
-    
-    /* Compact table headers on mobile */
-    .table thead th {
-        font-size: 0.75rem;
-        padding: 0.5rem;
-        background-color: #343a40;
-        color: white;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-    
-    /* Make badges more readable */
-    .badge {
-        font-size: 0.7rem;
-        padding: 0.25rem 0.5rem;
-        white-space: nowrap;
-    }
-    
-    /* Adjust card padding on mobile */
-    .card-body {
-        padding: 1rem;
-    }
-    
-    /* Better button sizing for touch */
-    .btn {
-        font-size: 0.875rem;
-        padding: 0.5rem 0.75rem;
-        min-height: 44px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .btn-sm {
-        font-size: 0.75rem;
-        padding: 0.375rem 0.5rem;
-        min-height: 36px;
-    }
-    
-    /* Improve button group layout on mobile */
-    .btn-group {
-        flex-wrap: nowrap;
-        gap: 0.25rem;
-    }
-    
-    .btn-group .btn {
-        margin: 0;
-        border-radius: 4px !important;
-        flex: 1;
-    }
-    
-    /* Make action buttons more touch-friendly */
-    .btn-action {
-        min-width: 44px;
-        min-height: 44px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.5rem;
-    }
-    
-    /* Better modal handling */
-    .modal-dialog {
-        margin: 0.5rem;
-        max-width: calc(100% - 1rem);
-    }
-    
-    .modal-body {
-        padding: 1rem;
-        max-height: 70vh;
-        overflow-y: auto;
-    }
-    
-    .modal-footer {
-        padding: 0.75rem 1rem;
-    }
-    
-    /* Better form elements for touch */
-    .form-control,
-    .form-select {
-        font-size: 16px; /* Prevents zoom on iOS */
-        padding: 0.75rem;
-        min-height: 44px;
-    }
-    
-    /* Improve table in modals */
-    .modal .table-responsive {
-        max-height: 50vh;
-        overflow-y: auto;
-    }
-    
-    /* Better text handling */
-    .table td {
-        max-width: 150px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
-    /* Make important columns sticky */
-    .table th:first-child,
-    .table td:first-child {
-        position: sticky;
-        left: 0;
-        background: inherit;
-        z-index: 5;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    }
-    
-    .table th:nth-child(2),
-    .table td:nth-child(2) {
-        position: sticky;
-        left: 60px;
-        background: inherit;
-        z-index: 5;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    }
-}
-
-/* Small screens */
-@media (max-width: 576px) {
-    .table {
-        min-width: 600px;
-    }
-    
-    .table th,
-    .table td {
-        padding: 0.5rem 0.25rem;
-        font-size: 0.75rem;
-    }
-    
-    /* Hide less important columns */
-    .table th:nth-child(4),
-    .table td:nth-child(4),
-    .table th:nth-child(6),
-    .table td:nth-child(6),
-    .table th:nth-child(8),
-    .table td:nth-child(8) {
-        display: none;
-    }
-    
-    /* Make action buttons more compact */
-    .btn-group-actions .btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.7rem;
-        min-width: 40px;
-        min-height: 40px;
-    }
-    
-    /* Better text handling */
-    .table td {
-        max-width: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    
-    .badge {
-        font-size: 0.6rem;
-        padding: 0.2rem 0.4rem;
-    }
-}
-
-/* Extra small screens */
-@media (max-width: 480px) {
-    .table {
-        min-width: 500px;
-    }
-    
-    .table th,
-    .table td {
-        padding: 0.25rem 0.25rem;
-        font-size: 0.7rem;
-    }
-    
-    .btn {
-        font-size: 0.75rem;
-        padding: 0.375rem 0.5rem;
-        min-height: 40px;
-    }
-    
-    .btn-sm {
-        font-size: 0.65rem;
-        padding: 0.25rem 0.375rem;
-        min-height: 32px;
-    }
-    
-    .badge {
-        font-size: 0.55rem;
-        padding: 0.15rem 0.3rem;
-    }
-}
-
-/* Enhanced table scrolling for all screen sizes */
-.table-responsive {
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background: white;
-    position: relative;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.table-responsive::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
-    border-radius: 8px 8px 0 0;
-}
-
-/* Simple scroll indicator for mobile */
-@media (max-width: 768px) {
-    .table-responsive::after {
-        content: '← Cuộn ngang →';
-        position: absolute;
-        bottom: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 0.7rem;
-        color: var(--secondary-color);
-        background: rgba(255, 255, 255, 0.95);
-        padding: 3px 8px;
-        border-radius: 10px;
-        white-space: nowrap;
-        z-index: 10;
-        opacity: 0.8;
-    }
-}
-
-/* Improved scrollbar styling */
-.table-responsive::-webkit-scrollbar {
-    height: 8px;
-}
-
-.table-responsive::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-.table-responsive::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-}
-
-.table-responsive::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-/* Firefox scrollbar */
-.table-responsive {
-    scrollbar-width: thin;
-    scrollbar-color: #888 #f1f1f1;
-}
-
 /* Navigation */
 .navbar-brand {
     font-weight: bold;
@@ -479,7 +174,6 @@ body {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
 }
 
 .table thead th {
@@ -490,9 +184,6 @@ body {
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 0.5px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
 }
 
 .table tbody tr {
@@ -501,56 +192,6 @@ body {
 
 .table tbody tr:hover {
     background-color: rgba(13, 110, 253, 0.05);
-}
-
-/* Specific table improvements for mobile */
-#projectsTable,
-#tasksTable,
-#betaTasksTable,
-#activityHistoryTable {
-    min-width: 100%;
-}
-
-@media (max-width: 768px) {
-    #projectsTable,
-    #tasksTable,
-    #betaTasksTable,
-    #activityHistoryTable {
-        min-width: 900px;
-    }
-    
-    /* Ensure action buttons are always visible */
-    .btn-group-actions {
-        min-width: 120px;
-        white-space: nowrap;
-    }
-    
-    /* Make important columns more prominent */
-    .table th:first-child,
-    .table td:first-child,
-    .table th:nth-child(2),
-    .table td:nth-child(2) {
-        position: sticky;
-        left: 0;
-        background: inherit;
-        z-index: 5;
-    }
-    
-    .table th:nth-child(2),
-    .table td:nth-child(2) {
-        left: 60px;
-    }
-    
-    /* Simple scroll indicators for mobile */
-    .table-responsive {
-        position: relative;
-    }
-    
-    /* Remove gradient effects that cause issues */
-    .table-responsive::before,
-    .table-responsive::after {
-        display: none;
-    }
 }
 
 /* Button Styles */
@@ -2521,8 +2162,6 @@ body {
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    position: relative;
-    z-index: 1;
 }
 
 .activity-history-card .card-header {
@@ -2530,8 +2169,6 @@ body {
     color: white;
     border-bottom: none;
     padding: 1.5rem;
-    position: relative;
-    z-index: 2;
 }
 
 .activity-history-card .card-header h5 {
@@ -2716,16 +2353,12 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border: none;
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    position: relative;
-    z-index: 1;
 }
 
 .activity-history-table thead {
     background: linear-gradient(135deg, #2c3e50, #34495e);
     color: white;
     border: none;
-    position: relative;
-    z-index: 2;
 }
 
 .activity-history-table thead th {
@@ -2736,7 +2369,6 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     position: relative;
-    z-index: 3;
 }
 
 .activity-history-table thead th:not(:last-child)::after {
@@ -3305,311 +2937,556 @@ body {
     }
 }
 
-/* --- MOBILE TABLE IMPROVEMENTS --- */
-@media (max-width: 768px) {
-    /* Enhanced table scrolling */
-    .table-responsive {
-        position: relative;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scroll-behavior: smooth;
-    }
-    
-    /* Improve table cell spacing */
-    .table td,
-    .table th {
-        padding: 0.5rem 0.75rem;
-        white-space: nowrap;
-        vertical-align: middle;
-    }
-    
-    /* Make important columns sticky */
-    .table th:first-child,
-    .table td:first-child {
-        position: sticky;
-        left: 0;
-        background: inherit;
-        z-index: 10;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    }
-    
-    /* Improve action buttons */
-    .btn-group-actions {
-        display: flex;
-        gap: 0.25rem;
-        flex-wrap: nowrap;
-    }
-    
-    .btn-group-actions .btn {
-        min-width: 40px;
-        height: 40px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
-    }
-    
-    /* Compact badges */
-    .badge {
-        font-size: 0.7rem;
-        padding: 0.25rem 0.5rem;
-        white-space: nowrap;
-    }
-    
-    /* Improve text overflow */
-    .table td {
-        max-width: 150px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+/* --- HORIZONTAL SCROLLBAR STYLES FOR TABLES --- */
+
+/* Enhanced horizontal scrollbar for project tables */
+.table-responsive {
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Extra small screens */
-@media (max-width: 480px) {
-    .table {
-        min-width: 600px;
-    }
-    
-    .table td,
-    .table th {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
-    }
-    
-    .btn-group-actions .btn {
-        min-width: 35px;
-        height: 35px;
-        font-size: 0.7rem;
-    }
-    
-    .badge {
-        font-size: 0.6rem;
-        padding: 0.2rem 0.4rem;
-    }
-}
-
-/* --- ENHANCED SCROLLBAR STYLING --- */
+/* Custom scrollbar styling for table containers */
 .table-responsive::-webkit-scrollbar {
-    height: 8px;
+    height: 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
 }
 
 .table-responsive::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+    background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 6px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-    transition: background 0.3s ease;
+    background: linear-gradient(90deg, #36d1c4 0%, #5b86e5 100%);
+    border-radius: 6px;
+    border: 2px solid #f8f9fa;
+    transition: all 0.3s ease;
 }
 
 .table-responsive::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: linear-gradient(90deg, #5b86e5 0%, #36d1c4 100%);
+    box-shadow: 0 2px 8px rgba(91, 134, 229, 0.4);
 }
 
-/* Firefox scrollbar */
-.table-responsive {
-    scrollbar-width: thin;
-    scrollbar-color: #888 #f1f1f1;
+.table-responsive::-webkit-scrollbar-corner {
+    background: #f8f9fa;
 }
 
-/* --- TABLE SPECIFIC IMPROVEMENTS --- */
-#projectsTable,
+/* Specific styling for project table */
+#projectsTable {
+    min-width: 1200px;
+    white-space: nowrap;
+}
+
+#projectsTable th,
+#projectsTable td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#projectsTable th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(90deg, #232526 0%, #414345 100%);
+    color: #f8f9fa;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: none;
+    white-space: nowrap;
+}
+
+/* Specific styling for tasks table */
 #tasksTable,
-#betaTasksTable,
-#activityHistoryTable {
-    width: 100%;
-    min-width: 100%;
+#betaTasksTable {
+    min-width: 1400px;
+    white-space: nowrap;
 }
 
+#tasksTable th,
+#tasksTable td,
+#betaTasksTable th,
+#betaTasksTable td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#tasksTable th,
+#betaTasksTable th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(90deg, #232526 0%, #414345 100%);
+    color: #f8f9fa;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: none;
+    white-space: nowrap;
+}
+
+/* Specific styling for activity history table */
+#activityHistoryTable {
+    min-width: 1200px;
+    white-space: nowrap;
+}
+
+#activityHistoryTable th,
+#activityHistoryTable td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#activityHistoryTable th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(90deg, #232526 0%, #414345 100%);
+    color: #f8f9fa;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: none;
+    white-space: nowrap;
+}
+
+/* Enhanced table row hover effects */
+.table-responsive .table tbody tr:hover {
+    background: linear-gradient(90deg, rgba(54, 209, 196, 0.1) 0%, rgba(91, 134, 229, 0.1) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Scroll indicator for wide tables */
+.table-responsive::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(90deg, transparent 0%, rgba(248, 249, 250, 0.8) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.table-responsive:hover::after {
+    opacity: 1;
+}
+
+/* Responsive adjustments for mobile */
 @media (max-width: 768px) {
+    .table-responsive {
+        margin: 0 -15px;
+        padding: 0 15px;
+    }
+    
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+    
     #projectsTable,
     #tasksTable,
     #betaTasksTable,
     #activityHistoryTable {
-        min-width: 900px;
+        min-width: 800px;
+    }
+    
+    #projectsTable th,
+    #projectsTable td,
+    #tasksTable th,
+    #tasksTable td,
+    #betaTasksTable th,
+    #betaTasksTable td,
+    #activityHistoryTable th,
+    #activityHistoryTable td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.875rem;
     }
 }
 
-/* --- TOUCH-FRIENDLY IMPROVEMENTS --- */
-@media (max-width: 768px) {
-    /* Make buttons more touch-friendly */
-    .btn {
-        min-height: 44px;
-        min-width: 44px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+@media (max-width: 576px) {
+    .table-responsive {
+        margin: 0 -10px;
+        padding: 0 10px;
     }
     
-    .btn-sm {
-        min-height: 40px;
-        min-width: 40px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+    #projectsTable,
+    #tasksTable,
+    #betaTasksTable,
+    #activityHistoryTable {
+        min-width: 600px;
     }
     
-    /* Improve form controls */
-    .form-control,
-    .form-select {
-        font-size: 16px; /* Prevents zoom on iOS */
-        min-height: 44px;
-        padding: 0.75rem;
-    }
-    
-    /* Improve modal interactions */
-    .modal-dialog {
-        margin: 0.5rem;
-        max-width: calc(100% - 1rem);
-    }
-    
-    .modal-body {
-        max-height: 70vh;
-        overflow-y: auto;
-        padding: 1rem;
-    }
-    
-    /* Improve dropdown menus */
-    .dropdown-menu {
-        max-height: 200px;
-        overflow-y: auto;
-    }
-    
-    /* Better button groups */
-    .btn-group {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 0.25rem;
-    }
-    
-    .btn-group .btn {
-        flex: 1;
-        margin: 0;
-    }
-    
-    /* Better action buttons */
-    .btn-group-actions {
-        display: flex;
-        gap: 0.25rem;
-        flex-wrap: nowrap;
-    }
-    
-    .btn-group-actions .btn {
-        min-width: 40px;
-        min-height: 40px;
-        padding: 0.5rem;
+    #projectsTable th,
+    #projectsTable td,
+    #tasksTable th,
+    #tasksTable td,
+    #betaTasksTable th,
+    #betaTasksTable td,
+    #activityHistoryTable th,
+    #activityHistoryTable td {
+        padding: 0.5rem 0.25rem;
         font-size: 0.8rem;
     }
 }
 
-/* Activity History View Fixes */
-#activityHistoryView {
-    position: relative;
-    z-index: 1;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-    overflow: hidden;
+/* Smooth scrolling animation */
+.table-responsive {
+    scroll-behavior: smooth;
 }
 
-/* Ensure activity history view doesn't overlap other elements */
-#activityHistoryView .card {
-    position: relative;
-    z-index: 1;
-    margin-bottom: 0;
+/* Custom scrollbar for Firefox */
+.table-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: #5b86e5 #f8f9fa;
 }
 
-#activityHistoryView .table-responsive {
+/* Loading state for tables */
+.table-responsive.loading {
     position: relative;
-    z-index: 1;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    min-height: 200px;
 }
 
-/* Fix for sticky positioning issues */
-.activity-history-table thead th {
-    position: sticky;
+.table-responsive.loading::before {
+    content: '';
+    position: absolute;
     top: 0;
-    z-index: 10;
-    background: linear-gradient(135deg, #2c3e50, #34495e);
-}
-
-/* Ensure proper stacking context */
-.activity-history-card {
-    position: relative;
-    z-index: 1;
-}
-
-.activity-history-card .card-body {
-    position: relative;
-    z-index: 1;
-}
-
-/* Fix for mobile display issues */
-@media (max-width: 768px) {
-    #activityHistoryView {
-        margin: 1rem 0;
-        padding: 0;
-        position: relative;
-        z-index: 50;
-    }
-    
-    #activityHistoryView .card {
-        border-radius: 8px;
-        margin: 0;
-        position: relative;
-        z-index: 1;
-    }
-    
-    .activity-history-table {
-        min-width: 800px;
-        position: relative;
-        z-index: 1;
-    }
-    
-    .activity-history-table thead th {
-        position: sticky;
-        top: 0;
-        z-index: 15;
-        background: linear-gradient(135deg, #2c3e50, #34495e);
-    }
-    
-    /* Ensure proper scrolling on mobile */
-    .activity-history-table .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        border-radius: 8px;
-    }
-    
-    /* Fix for button positioning */
-    #activityHistoryView .btn {
-        position: relative;
-        z-index: 10;
-    }
-}
-
-/* Fix for z-index conflicts */
-.modal {
-    z-index: 1050;
-}
-
-.dropdown-menu {
-    z-index: 1000;
-}
-
-.toast-container {
-    z-index: 1060;
-}
-
-/* Ensure activity history doesn't interfere with other elements */
-.leaderboard-sidebar,
-.notifications-sidebar {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 100;
 }
 
-#activityHistoryView {
-    z-index: 50;
+.table-responsive.loading::after {
+    content: 'Đang tải...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 101;
+    font-weight: 600;
+    color: #6c757d;
+}
+
+/* Empty state styling */
+.table-responsive .empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #6c757d;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.table-responsive .empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.table-responsive .empty-state h4 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.table-responsive .empty-state p {
+    margin-bottom: 0;
+    opacity: 0.8;
+}
+
+/* Enhanced table header styling */
+.table-responsive .table-dark th {
+    background: linear-gradient(90deg, #232526 0%, #414345 100%);
+    color: #f8f9fa !important;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    white-space: nowrap;
+}
+
+/* Table cell content wrapping for better readability */
+.table-responsive .table td {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.table-responsive .table td.expandable {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+/* Action buttons container */
+.table-responsive .btn-group {
+    white-space: nowrap;
+    flex-wrap: nowrap;
+}
+
+.table-responsive .btn-group .btn {
+    margin: 0 1px;
+    white-space: nowrap;
+}
+
+/* Badge styling in tables */
+.table-responsive .badge {
+    white-space: nowrap;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Link styling in tables */
+.table-responsive .table a {
+    color: #0d6efd;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 150px;
+}
+
+.table-responsive .table a:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}
+
+/* Priority and status indicators */
+.table-responsive .priority-indicator,
+.table-responsive .status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.table-responsive .priority-urgent {
+    background-color: #dc3545;
+    box-shadow: 0 0 8px rgba(220, 53, 69, 0.6);
+}
+
+.table-responsive .priority-high {
+    background-color: #fd7e14;
+}
+
+.table-responsive .priority-medium {
+    background-color: #ffc107;
+}
+
+.table-responsive .priority-low {
+    background-color: #28a745;
+}
+
+/* Animation for table loading */
+@keyframes tableFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.table-responsive .table {
+    animation: tableFadeIn 0.5s ease-out;
+}
+
+/* Scroll to top button for wide tables */
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(90deg, #36d1c4 0%, #5b86e5 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top.show {
+    display: flex;
+}
+
+/* Print styles for tables */
+@media print {
+    .table-responsive {
+        overflow: visible;
+        box-shadow: none;
+    }
+    
+    .table-responsive::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .scroll-to-top {
+        display: none !important;
+    }
+}
+
+/* Scroll indicators for table containers */
+.scroll-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(90deg, #36d1c4 0%, #5b86e5 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 20;
+    opacity: 0.8;
+}
+
+.scroll-indicator:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-indicator-left {
+    left: 10px;
+}
+
+.scroll-indicator-right {
+    right: 10px;
+}
+
+.scroll-indicator i {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Highlighted row styling */
+.table-responsive .table tbody tr.highlighted-row {
+    background: linear-gradient(90deg, rgba(54, 209, 196, 0.2) 0%, rgba(91, 134, 229, 0.2) 100%) !important;
+    box-shadow: 0 0 20px rgba(54, 209, 196, 0.3);
+    animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(54, 209, 196, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(54, 209, 196, 0.5);
+    }
+}
+
+/* Enhanced table container positioning */
+.table-responsive {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Mobile responsive adjustments for scroll indicators */
+@media (max-width: 768px) {
+    .scroll-indicator {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .scroll-indicator i {
+        font-size: 12px;
+    }
+    
+    .scroll-indicator-left {
+        left: 5px;
+    }
+    
+    .scroll-indicator-right {
+        right: 5px;
+    }
+}
+
+@media (max-width: 576px) {
+    .scroll-indicator {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .scroll-indicator i {
+        font-size: 10px;
+    }
+}
+
+/* Focus styles for keyboard navigation */
+.table-responsive:focus-within {
+    outline: 2px solid #36d1c4;
+    outline-offset: 2px;
+}
+
+/* Accessibility improvements */
+.scroll-indicator:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .scroll-indicator {
+        background: #000;
+        color: #fff;
+        border: 2px solid #fff;
+    }
+    
+    .table-responsive .table tbody tr.highlighted-row {
+        background: #ffff00 !important;
+        color: #000 !important;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .table-responsive {
+        scroll-behavior: auto;
+    }
+    
+    .scroll-indicator {
+        transition: none;
+    }
+    
+    .table-responsive .table tbody tr.highlighted-row {
+        animation: none;
+    }
 }
